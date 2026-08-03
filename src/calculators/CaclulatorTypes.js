@@ -1,0 +1,5 @@
+export const CalculatorTypes = Object.freeze({
+    BSA: 'Body Surface Area',
+    BROMIDE: 'Bromide Loading',
+    CHOCTOX: 'Chocolate Toxicity'
+});
