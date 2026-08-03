@@ -20,3 +20,7 @@ export function verifyNumberInput(input, boundsLower, boundsHigher){
 
     return input;
 }
+
+export function roundToThousandth(value){
+    return Math.round((value + Number.EPSILON) * 1000) / 1000;
+}

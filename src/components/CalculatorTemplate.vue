@@ -1,5 +1,8 @@
 <script setup>
+import { useCalculator } from '../composables/Calculator.js';
 import PatientChooser from './PatientChooser.vue';
+
+const calculator = useCalculator();
 
 </script>
 <template>
@@ -8,6 +11,10 @@ import PatientChooser from './PatientChooser.vue';
         <div class="calc-area">
             <slot />
         </div>
+    </div>
+    <div class="results-cont" v-if="calculator.showResults.value">
+        <slot name="results" />
+        <button @click="calculator.saveCalculation()">Save Calculation</button>
     </div>
 </template>
 <style>
@@ -49,6 +56,20 @@ import PatientChooser from './PatientChooser.vue';
     flex-direction: row;
     align-items: center;
     justify-content: right;
+}
+
+.results-cont{
+    padding: 1rem;
+    border-radius: 1rem;
+    background: var(--color-bg-secondary);
+    overflow: hidden;
+    margin: 1rem;
+    border: 0.2rem solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
 }
 
 </style>

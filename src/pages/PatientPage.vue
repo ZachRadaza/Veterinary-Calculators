@@ -1,6 +1,9 @@
 <script setup>
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
+import { usePatient } from '../composables/Patient.js';
+
+const patient = usePatient();
 
 </script>
 <template>
@@ -12,14 +15,20 @@ import PatientChooser from '../components/PatientChooser.vue';
                     <h4 class="header-title">Patients</h4>
                     <div class="patients-cont">
                         <div class="patients-list">
-
+                            <button v-for="pat in patient.patientsList.value" 
+                                :key="pat.id"
+                                :class="`patient-btn secondary ${pat.id === patient.currentPatientId.value ? 'selected' : ''}`"
+                                @click="patient.setCurrentPatientId(pat.id)"
+                            >
+                                {{ pat?.name }}
+                            </button>
                         </div>
                     </div>
                     <div class="buttons-cont">
                         <button>Add Patient</button>
-                        <button>Edit/View Patient</button>
-                        <button>Remove Patient</button>
-                        <button>Clear Section</button>
+                        <button :disabled="patient.currentPatientId.value === -1">Edit/View Patient</button>
+                        <button :disabled="patient.currentPatientId.value === -1">Remove Patient</button>
+                        <button @click="patient.setCurrentPatientId(-1)">Clear Section</button>
                     </div>
                 </div>
                 <div class="calculations-area content-area">
@@ -69,6 +78,9 @@ import PatientChooser from '../components/PatientChooser.vue';
 
 .content-area :is(.patients-cont, .calculations-table){
     min-height: 400px;
+    max-height: 600px;
+    overflow: auto;
+    height: 100%;
 }
 
 .buttons-cont{
@@ -84,6 +96,29 @@ import PatientChooser from '../components/PatientChooser.vue';
 
 .calculations-area{
     border-left: 0.2rem solid var(--color-primary);
+}
+
+.patients-list{
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-btn{
+    border-radius: 0;
+    padding: 1rem 1.4rem;
+}
+
+.patient-btn.selected, .patient-btn:nth-child(odd).selected{
+    background: var(--color-secondary);
+    color: var(--color-bg);
+}
+
+.patient-btn:nth-child(odd){
+    background: var(--color-bg-secondary);
+}
+
+.patient-btn:nth-child(odd):is(:hover, :focus){
+    background: var(--color-primary);
 }
 
 </style>

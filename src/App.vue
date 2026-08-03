@@ -77,6 +77,13 @@ button:is(:hover, :focus){
     border-color: var(--color-primary)
 }
 
+button:disabled{
+    background: var(--color-bg-secondary);
+    cursor: not-allowed;
+    color: var(--color-secondary);
+    border-color: var(--color-secondary)
+}
+
 button.secondary{
     background: var(--color-bg);
     color: var(--color-primary);
@@ -90,6 +97,8 @@ button.secondary:is(:hover, :focus){
 /* anchor */
 a{
     color: var(--color-secondary);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 a:hover{

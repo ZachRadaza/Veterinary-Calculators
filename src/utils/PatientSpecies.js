@@ -5,5 +5,6 @@ export const PatientSpecies = Object.freeze({
     FERRET: 'Ferret',
     RABBIT: 'Rabbit',
     MONKEY: 'Monkey',
-    BIRD: 'Bird'
+    BIRD: 'Bird',
+    OX: 'Ox'
 });

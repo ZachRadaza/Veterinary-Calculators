@@ -6,14 +6,18 @@ const patient = usePatient();
 const selectedPatientId = ref(patient.currentPatientId.value || -1);
 const patientInput = ref('');
 const currentPatient = computed(() => patient.currentPatient?.value ?? null);
-const patientList = computed(() => 
-    [...patient.patients.value.values()].map((patList) => patList[1])
-);
 
 watch(() => selectedPatientId.value, (newlySelectedId) => {
     patient.setCurrentPatientId(newlySelectedId);
     patientInput.value = currentPatient.value?.name || '';
 }, { immediate: true });
+
+watch(() => patient.currentPatientId.value, (patientId) => {
+    if(patientId === selectedPatientId.value)
+        return;
+
+    selectedPatientId.value = patientId;
+});
 
 </script>
 <template>
@@ -21,7 +25,7 @@ watch(() => selectedPatientId.value, (newlySelectedId) => {
         <div class="patient-input">
             <select v-model="selectedPatientId">
                 <option value="-1">Select Patient</option>
-                <option v-for="pat in patientList" :value="pat.id">{{ pat.name }}</option>
+                <option v-for="pat in patient.patientsList.value" :value="pat?.id">{{ pat?.name }}</option>
             </select>
             <input v-model="patientInput" placeholder="Patient Name"/>
             <button class="secondary">Search</button>
