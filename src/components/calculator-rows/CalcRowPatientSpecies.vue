@@ -19,9 +19,7 @@ function handleSpeciesChange(){
 </script>
 <template>
     <div class="calc-row species-row">
-        <div class="row-label">
-            <h5>Species: </h5>
-        </div>
+        <h5 class="row-label">Species: </h5>
         <select v-model="speciesSelected">
             <option v-for="specie in Object.values(PatientSpecies)" :value="specie" @change="handleSpeciesChange()">{{ specie }}</option>
         </select>

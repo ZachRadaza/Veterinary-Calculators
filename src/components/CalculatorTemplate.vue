@@ -28,6 +28,10 @@ const calculator = useCalculator();
     overflow: hidden;
 }
 
+h1, h2, h3, h4, h5, h6, p{
+    line-height: 2;
+}
+
 .calc-area{
     display: flex;
     flex-direction: column;
@@ -52,10 +56,21 @@ const calculator = useCalculator();
 }
 
 .row-label{
+    text-align: right;
+}
+
+.radio-col{
     display: flex;
     flex-direction: row;
+    gap: 1rem;
     align-items: center;
-    justify-content: right;
+}
+
+.radio-div{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
 }
 
 .results-cont{

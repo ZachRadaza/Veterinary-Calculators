@@ -13,9 +13,11 @@ const currentTab = ref();
         <h2 class="title">Veterinary Calculators</h2>
         <div class="content-container">
             <div class="calculator-list">
-                <RouterLink to="/bsa">{{ CalculatorTypes.BSA }}</RouterLink>
-                <RouterLink to="/bromide">{{ CalculatorTypes.BROMIDE }}</RouterLink>
-                <RouterLink to="/choctox">{{ CalculatorTypes.CHOCTOX }}</RouterLink>
+                <ul>
+                    <li><RouterLink to="/bsa">{{ CalculatorTypes.BSA }}</RouterLink></li>
+                    <li><RouterLink to="/bromide">{{ CalculatorTypes.BROMIDE }}</RouterLink></li>
+                    <li><RouterLink to="/choctox">{{ CalculatorTypes.CHOCTOX }}</RouterLink></li>
+                </ul>
             </div>
             <PatientChooser />
         </div>

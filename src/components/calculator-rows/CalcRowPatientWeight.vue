@@ -30,9 +30,7 @@ function handleInputChange(isLbs){
 </script>
 <template>
     <div class="calc-row weight-row">
-        <div class="row-label">
-            <h5>Weight:</h5>
-        </div>
+        <h5 class="row-label">Weight:</h5>
         <div class="weight-cont">
             <InputLabel label="lbs" class="short" v-model="patientLbs" @input="handleInputChange(true)"/>
             <InputLabel label="kg" class="short" v-model="patientKgs" @input="handleInputChange(false)"/>

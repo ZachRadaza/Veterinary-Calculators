@@ -121,6 +121,10 @@ a:hover{
     border-color: var(--color-secondary);
 }
 
+:is(input, textarea):disabled{
+    opacity: 0.5;
+}
+
 /* select */
 select{
     all: unset;
@@ -134,4 +138,18 @@ select{
     width: 200px;
     cursor: pointer;
 }
+
+/* radio */
+input[type="radio"]{
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-secondary);
+}
+
+label:has(input[type="radio"]){
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-family: var(--font-heading);
+}
+
 </style>
