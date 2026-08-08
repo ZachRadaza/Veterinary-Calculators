@@ -12,6 +12,7 @@
     --color-secondary: #2F6B4F;
     --color-accent: #A3C95B;
     --color-text: #17211B;
+    --color-error: #B84C4C;
 
     --font-heading: 'Montserrat', sans-serif;
     --font-body: 'Open Sans', sans-serif;
@@ -155,6 +156,11 @@ label:has(input[type="radio"]){
 /* all */
 :is(input, select).short{
     width: 100px;
+}
+
+:is(input, textarea, select).error{
+    border-color: var(--color-error);
+    outline: var(--color-error);
 }
 
 </style>

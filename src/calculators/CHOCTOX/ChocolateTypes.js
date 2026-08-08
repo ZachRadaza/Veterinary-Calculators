@@ -9,10 +9,6 @@ export const ChocolateTypes = Object.freeze({
     COCOAOTHER: 'Other Cocoa Content (%)',
     BAKER: 'Baker (unsweetened) Chocolate',
     POWDERDRY: 'Dry Cocoa Powder',
-    POWDERINSTANT: 'Instant Cocoa Powder',
-    BEANS: 'Cocoa Beans',
-    COFFEEBEANS: 'Coffee Beans or Ground',
-    COFFEEHULLS: 'Coffee Bean Hulls (e.g Mulch)'
 });
 
 export const ChocolateMethylxanthineMgG = Object.freeze({
@@ -25,9 +21,4 @@ export const ChocolateMethylxanthineMgG = Object.freeze({
     [ChocolateTypes.COCOA86]: 15.5 * 0.86,
     [ChocolateTypes.BAKER]: 15.5,
     [ChocolateTypes.POWDERDRY]: 28.5,
-
-    [ChocolateTypes.POWDERINSTANT]: null,
-    [ChocolateTypes.BEANS]: null,
-    [ChocolateTypes.COFFEEBEANS]: null,
-    [ChocolateTypes.COFFEEHULLS]: null
 });

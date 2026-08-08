@@ -35,6 +35,21 @@ function handleQuantityChange(){
 }
 
 function calculate(){
+    calculator.showResults.value = false;
+    calculator.showErrors.value = true;
+    
+    if(!patient.validateInputtedPatient())
+        return;
+
+    if(chocolateType.value <= 0)
+        return;
+
+    if(chocolateType.value === ChocolateTypes.COCOAOTHER && otherCocoaContent.value <= 0)
+        return;
+
+    if(quantity.value <= 0 || quantityUnit.value <= 0)
+        return;
+
     const patientEntered = patient.inputtedPatient?.value;
     const weightKg = lbsToKg(patientEntered?.weight);
     results.value = ChocolateToxicityHelper.calculateChocolateToxicity(
@@ -50,7 +65,7 @@ function calculate(){
 
 function reset(){
     patient.resetInputtedPatient();
-    calculator.showResults.value = false;
+    calculator.resetCalculator();
 
     quantity.value = '0';
     otherCocoaContent.value = '0';
@@ -62,7 +77,10 @@ function reset(){
         <CalcRowPatientWeight />
 
         <CalcRow label="Type of Chocolate: ">
-            <select v-model="chocolateType">
+            <select 
+                v-model="chocolateType" 
+                :class="`${calculator.showErrors.value && chocolateType <= 0 ? 'error' : ''}`"
+            >
                 <option :value="0">-- Select Chocolate Type --</option>
                 <option v-for="choc in Object.values(ChocolateTypes)" :key="choc" :value="choc">{{ choc }}</option>
             </select>
@@ -74,13 +92,21 @@ function reset(){
                 v-model="otherCocoaContent" 
                 class="short"
                 @input="handleOtherCocoaChange"
+                :error="calculator.showErrors && otherCocoaContent <= 0"
             />
         </CalcRow>
 
         <CalcRow label="Quantity: ">
             <div class="flex-row">
-                <input v-model="quantity" class="short" @input="handleQuantityChange"/>
-                <select v-model="quantityUnit" class="short">
+                <input 
+                    v-model="quantity" 
+                    :class="`short ${calculator.showErrors.value && quantity <= 0 ? 'error' : ''}`" 
+                    @input="handleQuantityChange"
+                />
+                <select 
+                    v-model="quantityUnit" 
+                    :class="`short ${calculator.showErrors.value && quantityUnit <= 0 ? 'error' : ''}`" 
+                >
                     <option v-for="unit in Object.values(ChocQuantityUnits)" :key="unit" :value="unit">{{ unit }}</option>
                 </select>
             </div>

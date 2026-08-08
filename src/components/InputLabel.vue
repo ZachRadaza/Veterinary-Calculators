@@ -8,6 +8,10 @@ defineProps({
     disabled: {
         type: Boolean,
         default: false
+    },
+    error: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -15,7 +19,7 @@ const inputModel = defineModel();
 </script>
 <template>
     <div class="input-label">
-        <input v-model="inputModel" :disabled="disabled"/>
+        <input v-model="inputModel" :disabled="disabled" :class="`${error ? 'error' : ''}`"/>
         <h6>{{ label }}</h6>
     </div>
 </template>

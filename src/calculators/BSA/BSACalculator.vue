@@ -15,6 +15,12 @@ const calculator = useCalculator();
 const bsa = ref(0);
 
 function calculate(){
+    reset();
+    calculator.showErrors.value = true;
+
+    if(!patient.validateInputtedPatient())
+        return;
+
     const patientEntered = patient.inputtedPatient?.value;
     const weightKg = lbsToKg(patientEntered?.weight);
     bsa.value = roundToThousandth(BSAHelper.calculateBSA(weightKg, patientEntered?.species));
@@ -24,7 +30,7 @@ function calculate(){
 
 function reset(){
     patient.resetInputtedPatient();
-    calculator.showResults.value = false;
+    calculator.resetCalculator();
 }
 
 </script>

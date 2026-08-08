@@ -1,14 +1,20 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { usePatient } from '../../composables/Patient.js';
 import InputLabel from '../InputLabel.vue';
 import { kgToLbs, lbsToKg, verifyNumberInput } from '../../utils/CalculatorUtils.js';
 import CalcRow from './CalcRow.vue';
+import { useCalculator } from '../../composables/Calculator.js';
 
 const patient = usePatient();
+const calculator = useCalculator();
 
 const patientLbs = ref('0');
 const patientKgs = ref('0');
+
+const showErrors = computed(() =>
+    !patient.validInputtedPatientWeight.value && calculator.showErrors.value
+);
 
 watch(() => patient.inputtedPatient?.value?.weight, (patWeight) => {
     patientLbs.value = patWeight ?? 0;
@@ -32,8 +38,20 @@ function handleInputChange(isLbs){
 <template>
     <CalcRow class="weight-row" label="Weight: ">
         <div class="flex-row">
-            <InputLabel label="lbs" class="short" v-model="patientLbs" @input="handleInputChange(true)"/>
-            <InputLabel label="kg" class="short" v-model="patientKgs" @input="handleInputChange(false)"/>
+            <InputLabel 
+                label="lbs" 
+                v-model="patientLbs"
+                @input="handleInputChange(true)" 
+                :error="showErrors"
+                class="short"
+            />
+            <InputLabel 
+                label="kg" 
+                v-model="patientKgs" 
+                @input="handleInputChange(false)"
+                :error="showErrors"
+                class="short" 
+            />
         </div>
     </CalcRow>
 </template>

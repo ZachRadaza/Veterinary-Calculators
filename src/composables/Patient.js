@@ -14,6 +14,9 @@ const patientsList = computed(() =>
 const currentPatient = computed(() => _patients.value.get(_currentPatientId.value) ?? null);
 const currentPatientAge = computed(() => currentPatient.value.dob);
 
+const validInputtedPatientWeight = computed(() => inputtedPatient?.value?.weight > 0);
+const validInputtedPatientSpecies = computed(() => Object.values(PatientSpecies).includes(inputtedPatient?.value?.species));
+
 export function usePatient(){
     
     async function init(){
@@ -21,20 +24,27 @@ export function usePatient(){
     }
 
     async function loadListOfPatients(){
-        const patientsList = await PatientService.getPatients('');
-        const patientsMap = new Map();
+        try{
+            const patientsList = await PatientService.getPatients('');
+            const patientsMap = new Map();
 
-        patientsList.map((patients) => {
-            patientsMap.set(patients.id, patients);
-        });
+            patientsList.map((patients) => {
+                patientsMap.set(patients.id, patients);
+            });
 
-        _patients.value = patientsMap;
+            _patients.value = patientsMap;
+        } catch(error){
+            console.error('Error in loading list of patients: ', error);
+        }
     }
 
     function setCurrentPatientId(patientId){
         _currentPatientId.value = patientId;
 
         inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
+        
+        if(!inputtedPatient.value)
+            resetInputtedPatient();
     }
 
     function resetInputtedPatient(){
@@ -51,10 +61,16 @@ export function usePatient(){
                 dob: "2004-07-07",
                 createdAt: "",
             };
+
+    }
+
+    function validateInputtedPatient(){
+        return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
     }
 
     return {
-        currentPatient, currentPatientId, patients, currentPatientAge, inputtedPatient, patientsList,
-        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient
+        currentPatient, currentPatientId, patients, currentPatientAge, inputtedPatient, patientsList, 
+        validInputtedPatientSpecies, validInputtedPatientWeight,
+        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient
     }
 }

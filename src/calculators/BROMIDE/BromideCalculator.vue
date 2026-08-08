@@ -87,6 +87,21 @@ watch(() => kbrData.value.concentration, (conc) => {
 })
 
 function calculate(){
+    calculator.showResults.value = false;
+    calculator.showErrors.value = true;
+
+    if(!patient.validateInputtedPatient())
+        return;
+
+    if((!kbrData.value.mgMl || !kbrData.value.mgTablet) && selectedCompound.value === BromideCompoundChoices.KBR)
+        return;
+
+    if(naBrData.value.concentrationML <= 0 && selectedCompound.value === BromideCompoundChoices.NABR)
+        return;
+
+    if(sharedData.value.daysLoad <= 0 || sharedData.value.numDoses <= 0 || sharedData.value.totalLoad <= 0)
+        return;
+
     const weightKg = lbsToKg(patient.inputtedPatient?.value?.weight ?? 0);
     let result = null;
 
@@ -122,7 +137,7 @@ function reset(){
 
     naBrData.value = { concentrationML: 250 };
 
-    calculator.showResults.value = false;
+    calculator.resetCalculator();
 }
 
 </script>
@@ -148,6 +163,7 @@ function reset(){
                     class="short" 
                     v-model="kbrData.mgMl"
                     :disabled="kbrData.concentration !== KbrConcentrationOptions.ML"
+                    :error="calculator.showErrors && kbrData.mgMl <= 0"
                 />
             </div>
             <h6> - OR - </h6>
@@ -158,6 +174,7 @@ function reset(){
                     class="short" 
                     v-model="kbrData.mgTablet" 
                     :disabled="kbrData.concentration !== KbrConcentrationOptions.TABlET"
+                    :error="calculator.showErrors && kbrData.mgTablet <= 0"
                 />
             </div>
         </div>
@@ -177,7 +194,12 @@ function reset(){
 
     <!-- NaBr stuff-->
      <CalcRow label="NaBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.NABR">
-        <InputLabel label="mg/ml" v-model="naBrData.concentrationML" class="short"/>
+        <InputLabel 
+            label="mg/ml" 
+            v-model="naBrData.concentrationML" 
+            :error="calculator.showErrors && naBrData.concentrationML <= 0"
+            class="short"
+        />
      </CalcRow>
     <!--end-->
 
@@ -194,7 +216,10 @@ function reset(){
 
     <CalcRow label="Total Load: ">
         <h5 v-if="showTotalLoadRectallyText">{{ sharedData.totalLoad }} mg/kg</h5>
-        <select v-else v-model="sharedData.totalLoad">
+        <select 
+            v-else v-model="sharedData.totalLoad" 
+            :class="`${calculator.showErrors.value && sharedData.totalLoad === 0 ? 'error' : ''}`"
+        >
             <option :value="0">Select a Dose</option>
             <option
                 v-for="load in selectedTotalLoads" 
@@ -205,14 +230,20 @@ function reset(){
     </CalcRow>
     <CalcRow label="Days To Load: ">
         <h5 v-if="showDaysLoadRectallyText">{{ sharedData.daysLoad }} Day</h5>
-        <select v-else v-model="sharedData.daysLoad">
+        <select 
+            v-else v-model="sharedData.daysLoad"
+            :class="`${calculator.showErrors.value && sharedData.daysLoad === 0 ? 'error' : ''}`"
+        >
             <option :value="0">Select Number of Days</option>
             <option v-for="days in DaysToLoad" :key="days" :value="days">{{ days }} Days</option>
         </select>
     </CalcRow>
     <CalcRow label="Number of Doses per day: ">
         <h5 v-if="showDosesPerDayRectallyText">{{ sharedData.numDoses }} Doses Per Day</h5>
-        <select v-else v-model="sharedData.numDoses">
+        <select 
+            v-else v-model="sharedData.numDoses"
+            :class="`${calculator.showErrors.value && sharedData.numDoses <= 0 ? 'error' : ''}`"
+        >
             <option :value="0">Select Doses Per Day</option>
             <option v-for="doses in NumberOfDoses" :key="doses" :value="doses">{{ doses }} Doses</option>
         </select>
