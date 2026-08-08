@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { PatientSpecies } from '../../utils/PatientSpecies';
 import { usePatient } from '../../composables/Patient';
+import CalcRow from './CalcRow.vue';
 
 const patient = usePatient();
 const speciesSelected = ref(PatientSpecies.DOG);
@@ -18,12 +19,11 @@ function handleSpeciesChange(){
 
 </script>
 <template>
-    <div class="calc-row species-row">
-        <h5 class="row-label">Species: </h5>
+    <CalcRow class="species-row" label="Species: ">
         <select v-model="speciesSelected">
             <option v-for="specie in Object.values(PatientSpecies)" :value="specie" @change="handleSpeciesChange()">{{ specie }}</option>
         </select>
-    </div>
+    </CalcRow>
 </template>
 <style>
 </style>

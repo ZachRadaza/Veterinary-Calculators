@@ -14,6 +14,7 @@ import { usePatient } from '../../composables/Patient.js';
 import { useCalculator } from '../../composables/Calculator.js';
 import BromideHelper from './BromideHelper.js';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
+import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -44,6 +45,29 @@ const selectedTotalLoads = computed(() => {
 
     return loadsByCompound[selectedCompound.value] ?? [];
 });
+const showTakingPhenoberbital = computed(() => 
+    (selectedCompound.value === BromideCompoundChoices.KBR && !kbrData.value.takingRectally) || 
+    selectedCompound.value === BromideCompoundChoices.NABR
+);
+const showTakingRectally = computed(() => 
+    selectedCompound.value === BromideCompoundChoices.KBR && 
+    kbrData.value.concentration === KbrConcentrationOptions.ML
+);
+const showTotalLoadRectallyText = computed(() =>
+    kbrData.value.takingRectally && 
+    selectedCompound.value === BromideCompoundChoices.KBR && 
+    kbrData.value.concentration === KbrConcentrationOptions.ML
+);
+const showDaysLoadRectallyText = computed(() => 
+    kbrData.value.takingRectally && 
+    selectedCompound.value === BromideCompoundChoices.KBR && 
+    kbrData.value.concentration === KbrConcentrationOptions.ML
+);
+const showDosesPerDayRectallyText = computed(() =>
+    kbrData.value.takingRectally &&
+    selectedCompound.value === BromideCompoundChoices.KBR &&
+    kbrData.value.concentration === KbrConcentrationOptions.ML
+);
 
 watch(() =>  kbrData.value.takingRectally, (rectally) => {
     if(rectally){
@@ -106,18 +130,16 @@ function reset(){
 <CalculatorTemplate>
     <CalcRowPatientWeight />
 
-    <div class="calc-row nabr-kbr-choice-row">
-        <h5 class="row-label">Choice of Inorganic Chemical Compounds: </h5>
+    <CalcRow class="nabr-kbr-choice-row" label="Choice of Inorganic Chemical Compounds: ">
         <div class="radio-col">
             <label v-for="comp in Object.values(BromideCompoundChoices)" :key="comp">
                 <input type="radio" :value="comp" v-model="selectedCompound"/> {{ comp }}
             </label>
         </div>
-    </div>
+    </CalcRow>
 
     <!-- KBr stuff-->
-    <div class="calc-row" v-if="selectedCompound === BromideCompoundChoices.KBR">
-        <h5 class="row-label">KBr Concentration: </h5>
+    <CalcRow label="KBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.KBR">
         <div class="kbr-selection">
             <div class="radio-div">
                 <input type="radio" :value="KbrConcentrationOptions.ML" v-model="kbrData.concentration" /> 
@@ -139,10 +161,9 @@ function reset(){
                 />
             </div>
         </div>
-    </div>
+    </CalcRow>
 
-    <div class="calc-row" v-if="selectedCompound === BromideCompoundChoices.KBR && kbrData.concentration === KbrConcentrationOptions.ML">
-        <h5 class="row-label">Taking Rectally: </h5>
+    <CalcRow label="Taking Rectally: " v-if="showTakingRectally">
         <div class="radio-col">
             <label>
                 <input type="radio" :value="true" v-model="kbrData.takingRectally"/> Yes
@@ -151,24 +172,16 @@ function reset(){
                 <input type="radio" :value="false" v-model="kbrData.takingRectally"/> No
             </label>
         </div>
-    </div>
+    </CalcRow>
     <!-- end-->
 
     <!-- NaBr stuff-->
-    <div class="calc-row" v-if="selectedCompound === BromideCompoundChoices.NABR">
-        <h5 class="row-label">NaBr Concentration: </h5>
+     <CalcRow label="NaBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.NABR">
         <InputLabel label="mg/ml" v-model="naBrData.concentrationML" class="short"/>
-    </div>
+     </CalcRow>
     <!--end-->
 
-    <div 
-        class="calc-row" 
-        v-if="
-            (selectedCompound === BromideCompoundChoices.KBR && !kbrData.takingRectally) || 
-            selectedCompound === BromideCompoundChoices.NABR
-        "
-    >
-        <h5 class="row-label">Also Taking Phenobarbital: </h5>
+    <CalcRow label="Also Taking Phenobarbital: " v-if="showTakingPhenoberbital">
         <div class="radio-col">
             <label>
                 <input type="radio" :value="true" v-model="sharedData.takingPhenobarbital"/> Yes
@@ -177,14 +190,10 @@ function reset(){
                 <input type="radio" :value="false" v-model="sharedData.takingPhenobarbital"/> No
             </label>
         </div>
-    </div>
+    </CalcRow>
 
-    <div class="calc-row">
-        <h5 class="row-label">Total Load: </h5>
-        <h5 v-if="kbrData.takingRectally && 
-                selectedCompound === BromideCompoundChoices.KBR && 
-                kbrData.concentration === KbrConcentrationOptions.ML
-            ">{{ sharedData.totalLoad }} mg/kg</h5>
+    <CalcRow label="Total Load: ">
+        <h5 v-if="showTotalLoadRectallyText">{{ sharedData.totalLoad }} mg/kg</h5>
         <select v-else v-model="sharedData.totalLoad">
             <option :value="0">Select a Dose</option>
             <option
@@ -193,30 +202,21 @@ function reset(){
                 :key="load"
             >{{ load }} mg/kg</option>
         </select>
-    </div>
-    <div class="calc-row">
-        <h5 class="row-label">Days To Load: </h5>
-        <h5 v-if="kbrData.takingRectally && 
-                selectedCompound === BromideCompoundChoices.KBR && 
-                kbrData.concentration === KbrConcentrationOptions.ML
-            "
-        >{{ sharedData.daysLoad }} Day</h5>
+    </CalcRow>
+    <CalcRow label="Days To Load: ">
+        <h5 v-if="showDaysLoadRectallyText">{{ sharedData.daysLoad }} Day</h5>
         <select v-else v-model="sharedData.daysLoad">
             <option :value="0">Select Number of Days</option>
             <option v-for="days in DaysToLoad" :key="days" :value="days">{{ days }} Days</option>
         </select>
-    </div>
-    <div class="calc-row">
-        <h5 class="row-label">Number of Doses per day: </h5>
-        <h5 v-if="kbrData.takingRectally &&
-                selectedCompound === BromideCompoundChoices.KBR &&
-                kbrData.concentration === KbrConcentrationOptions.ML
-        ">{{ sharedData.numDoses }} Doses Per Day</h5>
+    </CalcRow>
+    <CalcRow label="Number of Doses per day: ">
+        <h5 v-if="showDosesPerDayRectallyText">{{ sharedData.numDoses }} Doses Per Day</h5>
         <select v-else v-model="sharedData.numDoses">
             <option :value="0">Select Doses Per Day</option>
             <option v-for="doses in NumberOfDoses" :key="doses" :value="doses">{{ doses }} Doses</option>
         </select>
-    </div>
+    </CalcRow>
 
     <CalcRowCalculateBtns :calculate="calculate" :reset="reset"/>
 

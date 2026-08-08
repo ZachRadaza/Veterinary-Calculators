@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from 'vue';
 import { usePatient } from '../../composables/Patient.js';
 import InputLabel from '../InputLabel.vue';
 import { kgToLbs, lbsToKg, verifyNumberInput } from '../../utils/CalculatorUtils.js';
+import CalcRow from './CalcRow.vue';
 
 const patient = usePatient();
 
@@ -29,13 +30,12 @@ function handleInputChange(isLbs){
 
 </script>
 <template>
-    <div class="calc-row weight-row">
-        <h5 class="row-label">Weight:</h5>
+    <CalcRow class="weight-row" label="Weight: ">
         <div class="weight-cont">
             <InputLabel label="lbs" class="short" v-model="patientLbs" @input="handleInputChange(true)"/>
             <InputLabel label="kg" class="short" v-model="patientKgs" @input="handleInputChange(false)"/>
         </div>
-    </div>
+    </CalcRow>
 </template>
 <style scoped>
 
