@@ -152,4 +152,9 @@ label:has(input[type="radio"]){
     font-family: var(--font-heading);
 }
 
+/* all */
+:is(input, select).short{
+    width: 100px;
+}
+
 </style>

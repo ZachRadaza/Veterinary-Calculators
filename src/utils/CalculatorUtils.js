@@ -6,6 +6,7 @@ export function kgToLbs(weightKg){
     return Math.round(weightKg * 2.2046226218 * 100) / 100;
 }
 
+// to the power of 10 so like 10000 or 100
 export function verifyNumberInput(input, boundsLower, boundsHigher){
     const numInput = Number(input);
 
@@ -15,8 +16,15 @@ export function verifyNumberInput(input, boundsLower, boundsHigher){
     if(numInput < boundsLower)
         return boundsLower;
 
-    if(input > boundsHigher)
-        return boundsHigher;
+    if(numInput === boundsHigher)
+        return numInput;
+    
+    const boundsHigherLength = boundsHigher.toString().length - 1;
+    if(input.length > boundsHigherLength){
+        const ret = input.slice(0, boundsHigherLength);
+
+        return ret;
+    }
 
     return input;
 }

@@ -87,4 +87,11 @@ h1, h2, h3, h4, h5, h6, p{
     justify-content: center;
 }
 
+.flex-row{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
 </style>

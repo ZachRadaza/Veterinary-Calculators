@@ -17,10 +17,10 @@ watch(() => patient.inputtedPatient?.value?.weight, (patWeight) => {
 
 function handleInputChange(isLbs){
     if(isLbs){
-        patientLbs.value = verifyNumberInput(patientLbs.value, 0, 10000);
+        patientLbs.value = verifyNumberInput(patientLbs.value, 0, 1000000);
         patientKgs.value = lbsToKg(Number(patientLbs.value));
     } else {
-        patientKgs.value = verifyNumberInput(patientKgs.value, 0, 10000);
+        patientKgs.value = verifyNumberInput(patientKgs.value, 0, 1000000);
         patientLbs.value = kgToLbs(Number(patientKgs.value));
     }
 
@@ -31,19 +31,12 @@ function handleInputChange(isLbs){
 </script>
 <template>
     <CalcRow class="weight-row" label="Weight: ">
-        <div class="weight-cont">
+        <div class="flex-row">
             <InputLabel label="lbs" class="short" v-model="patientLbs" @input="handleInputChange(true)"/>
             <InputLabel label="kg" class="short" v-model="patientKgs" @input="handleInputChange(false)"/>
         </div>
     </CalcRow>
 </template>
 <style scoped>
-
-.weight-cont{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-}
 
 </style>
