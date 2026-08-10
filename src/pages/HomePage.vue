@@ -17,6 +17,7 @@ const currentTab = ref();
                     <li><RouterLink to="/bsa">{{ CalculatorTypes.BSA }}</RouterLink></li>
                     <li><RouterLink to="/bromide">{{ CalculatorTypes.BROMIDE }}</RouterLink></li>
                     <li><RouterLink to="/choctox">{{ CalculatorTypes.CHOCTOX }}</RouterLink></li>
+                    <li><RouterLink to="/feedtube">{{ CalculatorTypes.FEEDTUBE }}</RouterLink></li>
                 </ul>
             </div>
             <PatientChooser />

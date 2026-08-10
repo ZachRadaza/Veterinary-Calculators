@@ -1,8 +1,11 @@
 <script setup>
+import { onMounted } from 'vue';
 import { useCalculator } from '../composables/Calculator.js';
 import PatientChooser from './PatientChooser.vue';
 
 const calculator = useCalculator();
+
+onMounted(() => calculator.resetCalculator());
 
 </script>
 <template>
@@ -73,6 +76,10 @@ h1, h2, h3, h4, h5, h6, p{
     align-items: center;
 }
 
+.radio-div.top{
+    align-items: start;
+}
+
 .results-cont{
     padding: 1rem;
     border-radius: 1rem;
@@ -92,6 +99,12 @@ h1, h2, h3, h4, h5, h6, p{
     flex-direction: row;
     gap: 1rem;
     align-items: center;
+}
+
+.flex-col{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 </style>

@@ -1,6 +1,14 @@
 <script setup>
+import InputLabel from '../InputLabel.vue';
+import CalcRow from './CalcRow.vue';
+
 defineProps({
     label: {
+        type: String,
+        required: true,
+        default: '-'
+    },
+    inputLabel: {
         type: String,
         required: true,
         default: '-'
@@ -18,26 +26,16 @@ defineProps({
 const inputModel = defineModel();
 </script>
 <template>
-    <div class="input-label">
-        <input 
+    <CalcRow :label="label">
+        <InputLabel 
+            :label="inputLabel" 
             v-model="inputModel" 
             :disabled="disabled" 
-            :class="`${$attrs.class} ${error ? 'error' : ''}`"
+            :error="error"
+            :class="`${$attrs.class}`"
+            @input="$attrs.onInput"
         />
-        <h6>{{ label }}</h6>
-    </div>
+    </CalcRow>
 </template>
 <style scoped>
-
-.input-label{
-    display: flex;
-    flex-direction: row;
-    gap: 1ch;
-    align-items: center;
-}
-
-.input-label.short input{
-    width: 100px;
-}
-
 </style>

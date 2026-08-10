@@ -24,8 +24,13 @@ export function useCalculator(){
         showResults.value = false;
     }
 
+    function startCalculator(){
+        showErrors.value = true;
+        showResults.value = false;
+    }
+
     return { 
         currentCalcType, showResults, inputValues, showErrors,
-        setCurrentCalculatorType, saveCalculation, resetCalculator
+        setCurrentCalculatorType, saveCalculation, resetCalculator, startCalculator
     };
 }

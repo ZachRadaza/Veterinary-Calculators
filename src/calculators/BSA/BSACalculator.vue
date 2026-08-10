@@ -15,8 +15,7 @@ const calculator = useCalculator();
 const bsa = ref(0);
 
 function calculate(){
-    reset();
-    calculator.showErrors.value = true;
+    calculator.startCalculator();
 
     if(!patient.validateInputtedPatient())
         return;

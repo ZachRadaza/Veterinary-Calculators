@@ -131,7 +131,7 @@ select{
     all: unset;
     font-family: var(--font-heading);
     border-radius: 1rem;
-    border: 0.1rem solid var(--color-secondary);
+    border: 0.1rem solid var(--color-text);
     color: var(--color-text);
     background: var(--color-bg);
     font-size: 1rem;
@@ -156,6 +156,10 @@ label:has(input[type="radio"]){
 /* all */
 :is(input, select).short{
     width: 100px;
+}
+
+:is(input, select).long{
+    width: 350px;
 }
 
 :is(input, textarea, select).error{

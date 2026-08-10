@@ -15,6 +15,7 @@ import { useCalculator } from '../../composables/Calculator.js';
 import BromideHelper from './BromideHelper.js';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
+import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -87,8 +88,7 @@ watch(() => kbrData.value.concentration, (conc) => {
 })
 
 function calculate(){
-    calculator.showResults.value = false;
-    calculator.showErrors.value = true;
+    calculator.startCalculator();
 
     if(!patient.validateInputtedPatient())
         return;
@@ -155,7 +155,7 @@ function reset(){
 
     <!-- KBr stuff-->
     <CalcRow label="KBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.KBR">
-        <div class="kbr-selection">
+        <div class="kbr-selection flex-col">
             <div class="radio-div">
                 <input type="radio" :value="KbrConcentrationOptions.ML" v-model="kbrData.concentration" /> 
                 <InputLabel 
@@ -180,39 +180,34 @@ function reset(){
         </div>
     </CalcRow>
 
-    <CalcRow label="Taking Rectally: " v-if="showTakingRectally">
-        <div class="radio-col">
-            <label>
-                <input type="radio" :value="true" v-model="kbrData.takingRectally"/> Yes
-            </label>
-            <label>
-                <input type="radio" :value="false" v-model="kbrData.takingRectally"/> No
-            </label>
-        </div>
-    </CalcRow>
+    <CalcRowTwoOptions
+        label="Taking Rectally: "
+        v-show="showTakingRectally"
+        v-model="kbrData.takingRectally"
+        :option1="{ value: true, label: 'Yes' }"
+        :option2="{ value: false, label: 'No' }"
+    />
+
     <!-- end-->
 
     <!-- NaBr stuff-->
-     <CalcRow label="NaBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.NABR">
+    <CalcRow label="NaBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.NABR">
         <InputLabel 
             label="mg/ml" 
             v-model="naBrData.concentrationML" 
             :error="calculator.showErrors && naBrData.concentrationML <= 0"
             class="short"
         />
-     </CalcRow>
+    </CalcRow>
     <!--end-->
 
-    <CalcRow label="Also Taking Phenobarbital: " v-if="showTakingPhenoberbital">
-        <div class="radio-col">
-            <label>
-                <input type="radio" :value="true" v-model="sharedData.takingPhenobarbital"/> Yes
-            </label>
-            <label>
-                <input type="radio" :value="false" v-model="sharedData.takingPhenobarbital"/> No
-            </label>
-        </div>
-    </CalcRow>
+    <CalcRowTwoOptions
+        label="Also Taking Phenobarbital: "
+        v-show="showTakingPhenoberbital"
+        v-model="sharedData.takingPhenobarbital"
+        :option1="{ value: true, label: 'Yes' }"
+        :option2="{ value: false, label: 'No' }"
+    />
 
     <CalcRow label="Total Load: ">
         <h5 v-if="showTotalLoadRectallyText">{{ sharedData.totalLoad }} mg/kg</h5>
@@ -262,14 +257,4 @@ function reset(){
 </CalculatorTemplate>
 </template>
 <style>
-
-.kbr-selection{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.kbr-selection label{
-    white-space: nowrap;
-}
 </style>

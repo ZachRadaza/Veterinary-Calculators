@@ -20,8 +20,9 @@ export function verifyNumberInput(input, boundsLower, boundsHigher){
         return numInput;
     
     const boundsHigherLength = boundsHigher.toString().length - 1;
-    if(input.length > boundsHigherLength){
-        const ret = input.slice(0, boundsHigherLength);
+    const cleanedInput = String(numInput);
+    if(cleanedInput.length > boundsHigherLength){
+        const ret = cleanedInput.slice(0, boundsHigherLength);
 
         return ret;
     }

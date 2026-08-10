@@ -37,6 +37,12 @@ const router = createRouter({
             meta: { calcType: CalculatorTypes.CHOCTOX }
         },
         {
+            path: '/feedtube',
+            name: CalculatorTypes.FEEDTUBE,
+            component: CalculatorPage,
+            meta: { calcType: CalculatorTypes.FEEDTUBE }
+        },
+        {
             path: "/:pathMatch(.*)*",
             redirect: "/"
         }

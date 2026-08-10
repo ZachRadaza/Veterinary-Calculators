@@ -11,6 +11,7 @@ import { usePatient } from '../../composables/Patient.js';
 import { lbsToKg, roundToThousandth, verifyNumberInput } from '../../utils/CalculatorUtils.js';
 import { useCalculator } from '../../composables/Calculator.js';
 import ChocolateToxicityHelper from './ChocolateToxicityHelper.js';
+import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -35,8 +36,7 @@ function handleQuantityChange(){
 }
 
 function calculate(){
-    calculator.showResults.value = false;
-    calculator.showErrors.value = true;
+    calculator.startCalculator();
     
     if(!patient.validateInputtedPatient())
         return;
@@ -76,15 +76,13 @@ function reset(){
     <CalculatorTemplate>
         <CalcRowPatientWeight />
 
-        <CalcRow label="Type of Chocolate: ">
-            <select 
-                v-model="chocolateType" 
-                :class="`${calculator.showErrors.value && chocolateType <= 0 ? 'error' : ''}`"
-            >
-                <option :value="0">-- Select Chocolate Type --</option>
-                <option v-for="choc in Object.values(ChocolateTypes)" :key="choc" :value="choc">{{ choc }}</option>
-            </select>
-        </CalcRow>
+        <CalcRowSelect 
+            label="Type of Chocolate: "
+            :options="Object.values(ChocolateTypes)"
+            v-model="chocolateType"
+            default-option-label="-- Select Chocolate Type --"
+            :show-error="calculator.showErrors.value && chocolateType <= 0"
+        />
 
         <CalcRow label="Enter Cocoa Content: " v-if="chocolateType === ChocolateTypes.COCOAOTHER">
             <InputLabel 
