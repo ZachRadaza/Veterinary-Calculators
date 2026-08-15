@@ -23,6 +23,7 @@ export function useCalculator(){
     function resetCalculator(){
         showErrors.value = false;
         showResults.value = false;
+        calculatorCalculating.value = false;
     }
 
     function startCalculator(){

@@ -1,8 +1,11 @@
 <script setup>
+import { computed, onMounted } from 'vue';
+import DialogInfo from '../dialogs/DialogInfo.vue';
 import InputLabel from '../InputLabel.vue';
 import CalcRow from './CalcRow.vue';
+import { useInvalidInputDialog } from '../../composables/InvalidInputDialog.js';
 
-defineProps({
+const { label, error } = defineProps({
     label: {
         type: String,
         required: true,
@@ -23,6 +26,14 @@ defineProps({
     }
 });
 
+const isInvalid = computed(() => error);
+
+const invalidInputDialog = useInvalidInputDialog(isInvalid, label);
+
+onMounted(() => {
+    invalidInputDialog.init();
+});
+
 const inputModel = defineModel();
 </script>
 <template>
@@ -34,6 +45,12 @@ const inputModel = defineModel();
             :error="error"
             :class="`${$attrs.class}`"
             @input="$attrs.onInput"
+        />
+        
+        <DialogInfo 
+            :ref="invalidInputDialog.dialogRef"
+            title="Incomplete Input"
+            :descriptions="[invalidInputDialog.dialogLabel.value]"
         />
     </CalcRow>
 </template>

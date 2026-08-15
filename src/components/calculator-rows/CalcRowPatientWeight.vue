@@ -7,29 +7,28 @@ import CalcRow from './CalcRow.vue';
 import { useCalculator } from '../../composables/Calculator.js';
 import DialogPatientWeightChange from '../dialogs/DialogPatientWeightChange.vue';
 import DialogInfo from '../dialogs/DialogInfo.vue';
+import { useInvalidInputDialog } from '../../composables/InvalidInputDialog.js';
 
 const patient = usePatient();
 const calculator = useCalculator();
 
 const patientLbs = ref('0');
 const patientKgs = ref('0');
-const dialogEnterWeightRef = ref(null);
 
 const showErrors = computed(() =>
     !patient.validInputtedPatientWeight.value && calculator.showErrors.value
 );
 
+const invalidInputDialog = useInvalidInputDialog(showErrors, 'Patient Weight');
+
+onMounted(() => {
+    invalidInputDialog.init();
+});
+
 watch(() => patient.inputtedPatient?.value?.weight, (patWeight) => {
     patientLbs.value = patWeight ?? 0;
     patientKgs.value = lbsToKg(patWeight ?? 0);
 }, { immediate: true });
-
-watch(calculator.calculatorCalculating, (calcing) => {
-    if(calcing && !patient.validInputtedPatientWeight.value){        
-        dialogEnterWeightRef.value?.openDialog();
-        calculator.calculatorCalculating.value = false;
-    }
-});
 
 function handleInputChange(isLbs){
     if(isLbs){
@@ -63,16 +62,16 @@ function handleInputChange(isLbs){
                 class="short" 
             />
         </div>
+
+        <!-- Dialogs -->
+        <DialogPatientWeightChange />
+
+        <DialogInfo
+            :ref="invalidInputDialog.dialogRef"
+            title="Incomplete Input"
+            :descriptions="[invalidInputDialog.dialogLabel.value]"
+        />
     </CalcRow>
-
-    <!-- Dialogs -->
-    <DialogPatientWeightChange />
-
-    <DialogInfo
-        ref="dialogEnterWeightRef"
-        title="Incomplete Input"
-        :descriptions="['Please Enter Patient Weight']"
-    />
 </template>
 <style scoped>
 

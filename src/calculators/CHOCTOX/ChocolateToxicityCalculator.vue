@@ -69,6 +69,7 @@ function reset(){
 
     quantity.value = '0';
     otherCocoaContent.value = '0';
+    chocolateType.value = 0;
 }
 
 </script>

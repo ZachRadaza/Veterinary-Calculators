@@ -247,12 +247,12 @@ function reset(){
     <CalcRowCalculateBtns :calculate="calculate" :reset="reset"/>
 
     <template #results>
-        <h5>{{ resultValues.compound }} Loading Dose</h5>
-        <h6>Dose: {{ roundToThousandth(resultValues.doseMg) }} mg per dose</h6>
-        <h6>Daily Dose: {{ roundToThousandth(resultValues.dailyDoseMg) }} mg/day</h6>
-        <h6>Total Loading Amount: {{ roundToThousandth(resultValues.totalLoadMg) }} mg</h6>
-        <h6>Concentration: {{ resultValues.concentration }} {{ resultValues.concentrationUnit }}</h6>
-        <h6>Route: {{ resultValues.dosageForm === 'liquid' ? 'Liquid' : 'Tablet' }}</h6>
+        <h5>{{ resultValues?.compound }} Loading Dose</h5>
+        <h6>Dose: {{ roundToThousandth(resultValues?.doseMg) }} mg per dose</h6>
+        <h6>Daily Dose: {{ roundToThousandth(resultValues?.dailyDoseMg) }} mg/day</h6>
+        <h6>Total Loading Amount: {{ roundToThousandth(resultValues?.totalLoadMg) }} mg</h6>
+        <h6>Concentration: {{ resultValues?.concentration }} {{ resultValues?.concentrationUnit }}</h6>
+        <h6>Route: {{ resultValues?.dosageForm === 'liquid' ? 'Liquid' : 'Tablet' }}</h6>
     </template>
 </CalculatorTemplate>
 </template>
