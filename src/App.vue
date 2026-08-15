@@ -95,6 +95,17 @@ button.secondary:is(:hover, :focus){
     color: var(--color-bg)
 }
 
+button.no-bg{
+    background: transparent;
+    border-color: transparent;
+}
+
+button.no-bg:is(:hover, :focus){
+    color: var(--color-secondary);
+    border-color: transparent;
+    background: transparent;
+}
+
 /* anchor */
 a{
     color: var(--color-secondary);
@@ -138,6 +149,16 @@ select{
     padding: 0.5rem 0.8rem;
     width: 200px;
     cursor: pointer;
+    
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+}
+
+select:is(:hover, :focus){
+    color: var(--color-secondary);
+    border-color: var(--color-bg-primary);
 }
 
 /* radio */

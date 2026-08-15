@@ -135,7 +135,7 @@ function calculate(){
         dilutingVolumes.value
     );
 
-    calculator.showResults.value = true;
+    calculator.endCalculator();
 }
 
 function reset(){
@@ -273,9 +273,10 @@ function reset(){
 
 .feeding-schedule{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(0, 200px));
     gap: 1rem;
     width: 100%;
+    justify-content: center;
 }
 
 .day{

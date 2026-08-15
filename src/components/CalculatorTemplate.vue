@@ -1,11 +1,16 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useCalculator } from '../composables/Calculator.js';
 import PatientChooser from './PatientChooser.vue';
+import { usePatient } from '../composables/Patient.js';
 
 const calculator = useCalculator();
+const patient = usePatient();
 
-onMounted(() => calculator.resetCalculator());
+onMounted(() => {
+    calculator.resetCalculator();
+    patient.resetInputtedPatient();
+});
 
 </script>
 <template>
@@ -15,6 +20,7 @@ onMounted(() => calculator.resetCalculator());
             <slot />
         </div>
     </div>
+
     <div class="results-cont" v-if="calculator.showResults.value">
         <slot name="results" />
         <button @click="calculator.saveCalculation()">Save Calculation</button>

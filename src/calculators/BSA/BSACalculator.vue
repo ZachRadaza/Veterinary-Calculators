@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
 import CalcRowPatientSpecies from '../../components/calculator-rows/CalcRowPatientSpecies.vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
@@ -24,7 +24,7 @@ function calculate(){
     const weightKg = lbsToKg(patientEntered?.weight);
     bsa.value = roundToThousandth(BSAHelper.calculateBSA(weightKg, patientEntered?.species));
 
-    calculator.showResults.value = true;
+    calculator.endCalculator();
 }
 
 function reset(){

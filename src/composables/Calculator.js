@@ -8,6 +8,7 @@ const currentCalcType = computed(() => _currentCalcType.value);
 const showResults = ref(false);
 const inputValues = ref('');
 const showErrors = ref(false);
+const calculatorCalculating = ref(false);
 
 export function useCalculator(){
 
@@ -27,10 +28,17 @@ export function useCalculator(){
     function startCalculator(){
         showErrors.value = true;
         showResults.value = false;
+        calculatorCalculating.value = true;
+    }
+
+    function endCalculator(){
+        showResults.value = true;
+        calculatorCalculating.value = false;
     }
 
     return { 
-        currentCalcType, showResults, inputValues, showErrors,
-        setCurrentCalculatorType, saveCalculation, resetCalculator, startCalculator
+        currentCalcType, showResults, inputValues, showErrors, calculatorCalculating,
+        setCurrentCalculatorType, saveCalculation, 
+        resetCalculator, startCalculator, endCalculator
     };
 }

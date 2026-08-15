@@ -16,6 +16,7 @@ const currentPatientAge = computed(() => currentPatient.value.dob);
 
 const validInputtedPatientWeight = computed(() => inputtedPatient?.value?.weight > 0);
 const validInputtedPatientSpecies = computed(() => Object.values(PatientSpecies).includes(inputtedPatient?.value?.species));
+const currentAndInputtedWeightEqual = computed(() => currentPatient.value?.weight === inputtedPatient.value?.weight);
 
 export function usePatient(){
     
@@ -41,7 +42,7 @@ export function usePatient(){
     function setCurrentPatientId(patientId){
         _currentPatientId.value = patientId;
 
-        inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
+        //inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
         
         if(!inputtedPatient.value)
             resetInputtedPatient();
@@ -70,7 +71,7 @@ export function usePatient(){
 
     return {
         currentPatient, currentPatientId, patients, currentPatientAge, inputtedPatient, patientsList, 
-        validInputtedPatientSpecies, validInputtedPatientWeight,
+        validInputtedPatientSpecies, validInputtedPatientWeight, currentAndInputtedWeightEqual,
         loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient
     }
 }

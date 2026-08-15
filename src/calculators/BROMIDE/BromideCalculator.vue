@@ -115,7 +115,7 @@ function calculate(){
     }
 
     resultValues.value = result;
-    calculator.showResults.value = true;
+    calculator.endCalculator();
 }
 
 function reset(){

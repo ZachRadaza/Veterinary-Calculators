@@ -60,7 +60,7 @@ function calculate(){
         Number(otherCocoaContent.value)
     );
 
-    calculator.showResults.value = true;
+    calculator.endCalculator();
 }
 
 function reset(){
