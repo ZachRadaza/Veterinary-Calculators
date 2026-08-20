@@ -161,6 +161,11 @@ select:is(:hover, :focus){
     border-color: var(--color-bg-primary);
 }
 
+select:disabled{
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 /* radio */
 input[type="radio"]{
     width: 1rem;

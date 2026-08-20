@@ -22,6 +22,10 @@ const { label } = defineProps({
     showError: {
         type: Boolean,
         default: false
+    },
+    postOptionText: {
+        type: String,
+        default: ''
     }
 });
 
@@ -40,11 +44,11 @@ onMounted(() => {
     <CalcRow :label="label">
         <select 
             v-model="selectModel" 
-            :class="`${$attrs.class} ${showError ? 'error' : ''}`" 
-            @change="$attrs.change"
+            :class="`${showError ? 'error' : ''}`" 
+            v-bind="$attrs"
         >
             <option v-if="defaultOptionLabel" :value="0">{{ defaultOptionLabel }}</option>
-            <option v-for="op in options" :key="op" :value="op">{{ op }}</option>
+            <option v-for="op in options" :key="op" :value="op">{{ op }} {{ postOptionText }}</option>
         </select>
 
         <DialogInfo

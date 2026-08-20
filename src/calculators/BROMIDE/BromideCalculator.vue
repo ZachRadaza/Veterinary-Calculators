@@ -16,6 +16,7 @@ import BromideHelper from './BromideHelper.js';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
+import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -54,21 +55,20 @@ const showTakingRectally = computed(() =>
     selectedCompound.value === BromideCompoundChoices.KBR && 
     kbrData.value.concentration === KbrConcentrationOptions.ML
 );
-const showTotalLoadRectallyText = computed(() =>
-    kbrData.value.takingRectally && 
-    selectedCompound.value === BromideCompoundChoices.KBR && 
-    kbrData.value.concentration === KbrConcentrationOptions.ML
+const showTakingRectallyText = computed(() =>
+    showTakingRectally.value &&
+    kbrData.value.takingRectally
 );
-const showDaysLoadRectallyText = computed(() => 
-    kbrData.value.takingRectally && 
-    selectedCompound.value === BromideCompoundChoices.KBR && 
-    kbrData.value.concentration === KbrConcentrationOptions.ML
+const showTotalLoadError = computed(() => 
+    calculator.showErrors.value && sharedData.totalLoad?.value === 0
 );
-const showDosesPerDayRectallyText = computed(() =>
-    kbrData.value.takingRectally &&
-    selectedCompound.value === BromideCompoundChoices.KBR &&
-    kbrData.value.concentration === KbrConcentrationOptions.ML
+const showDaysLoadError = computed(() => 
+    calculator.showErrors.value && sharedData.daysLoad?.value === 0
 );
+const showDosesPerDayError = computed(() => 
+    calculator.showErrors.value && sharedData.numDoses?.value <= 0
+);
+
 
 watch(() =>  kbrData.value.takingRectally, (rectally) => {
     if(rectally){
@@ -209,40 +209,35 @@ function reset(){
         :option2="{ value: false, label: 'No' }"
     />
 
-    <CalcRow label="Total Load: ">
-        <h5 v-if="showTotalLoadRectallyText">{{ sharedData.totalLoad }} mg/kg</h5>
-        <select 
-            v-else v-model="sharedData.totalLoad" 
-            :class="`${calculator.showErrors.value && sharedData.totalLoad === 0 ? 'error' : ''}`"
-        >
-            <option :value="0">Select a Dose</option>
-            <option
-                v-for="load in selectedTotalLoads" 
-                :value="load" 
-                :key="load"
-            >{{ load }} mg/kg</option>
-        </select>
-    </CalcRow>
-    <CalcRow label="Days To Load: ">
-        <h5 v-if="showDaysLoadRectallyText">{{ sharedData.daysLoad }} Day</h5>
-        <select 
-            v-else v-model="sharedData.daysLoad"
-            :class="`${calculator.showErrors.value && sharedData.daysLoad === 0 ? 'error' : ''}`"
-        >
-            <option :value="0">Select Number of Days</option>
-            <option v-for="days in DaysToLoad" :key="days" :value="days">{{ days }} Days</option>
-        </select>
-    </CalcRow>
-    <CalcRow label="Number of Doses per day: ">
-        <h5 v-if="showDosesPerDayRectallyText">{{ sharedData.numDoses }} Doses Per Day</h5>
-        <select 
-            v-else v-model="sharedData.numDoses"
-            :class="`${calculator.showErrors.value && sharedData.numDoses <= 0 ? 'error' : ''}`"
-        >
-            <option :value="0">Select Doses Per Day</option>
-            <option v-for="doses in NumberOfDoses" :key="doses" :value="doses">{{ doses }} Doses</option>
-        </select>
-    </CalcRow>
+    <CalcRowSelect 
+        label="Total Load:"
+        v-model="sharedData.totalLoad"
+        :options="selectedTotalLoads"
+        default-option-label="Select a Dose"
+        :show-error="showTotalLoadError"
+        :disabled="showTakingRectallyText"
+        post-option-text="mg/kg"
+    />
+
+    <CalcRowSelect 
+        label="Days To Load: "
+        v-model="sharedData.daysLoad"
+        :options="!showTakingRectallyText ? DaysToLoad : [1]"
+        default-option-label="Select Number of Days"
+        :show-error="showDaysLoadError"
+        :disabled="showTakingRectallyText"
+        post-option-text="Days"
+    />
+
+    <CalcRowSelect 
+        label="Number of Doses per Day: "
+        v-model="sharedData.numDoses"
+        :options="!showTakingRectallyText ? NumberOfDoses : [6]"
+        default-option-label="Select Doses Per Day"
+        :show-error="showDosesPerDayError"
+        :disabled="showTakingRectallyText"
+        post-option-text="Doses"
+    />
 
     <CalcRowCalculateBtns :calculate="calculate" :reset="reset"/>
 
