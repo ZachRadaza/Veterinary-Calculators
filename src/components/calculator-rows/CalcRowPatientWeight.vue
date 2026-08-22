@@ -53,6 +53,7 @@ function handleInputChange(isLbs){
                 @input="handleInputChange(true)" 
                 :error="showErrors"
                 class="short"
+                :has-default-num-bounds-check="false"
             />
             <InputLabel 
                 label="kg" 
@@ -60,6 +61,7 @@ function handleInputChange(isLbs){
                 @input="handleInputChange(false)"
                 :error="showErrors"
                 class="short" 
+                :has-default-num-bounds-check="false"
             />
         </div>
 

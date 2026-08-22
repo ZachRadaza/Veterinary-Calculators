@@ -1,28 +1,37 @@
 <script setup>
-defineProps({
+import { verifyNumberInput } from '../utils/CalculatorUtils';
+
+const { hasDefaultNumBoundsCheck } = defineProps({
     label: {
         type: String,
         required: true,
         default: '-'
     },
-    disabled: {
-        type: Boolean,
-        default: false
-    },
     error: {
         type: Boolean,
         default: false
+    },
+    hasDefaultNumBoundsCheck: {
+        type: Boolean,
+        default: true
     }
 });
 
 const inputModel = defineModel();
+
+function handleInputChange(){
+    if(hasDefaultNumBoundsCheck)
+        inputModel.value = verifyNumberInput(inputModel?.value, 0, 10000000);
+}
+
 </script>
 <template>
     <div class="input-label">
         <input 
             v-model="inputModel" 
-            :disabled="disabled" 
-            :class="`${$attrs.class} ${error ? 'error' : ''}`"
+            :class="`${error ? 'error' : ''}`"
+            v-bind="$attrs"
+            @input="handleInputChange"
         />
         <h6>{{ label }}</h6>
     </div>

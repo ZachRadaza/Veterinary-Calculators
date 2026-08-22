@@ -23,6 +23,10 @@ const { label, error } = defineProps({
     error: {
         type: Boolean,
         default: false
+    },
+    hasDefaultNumBoundsCheck: {
+        type: Boolean,
+        default: true,
     }
 });
 
@@ -45,6 +49,7 @@ const inputModel = defineModel();
             :error="error"
             :class="`${$attrs.class}`"
             @input="$attrs.onInput"
+            :has-default-num-bounds-check="hasDefaultNumBoundsCheck"
         />
         
         <DialogInfo 

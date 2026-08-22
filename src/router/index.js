@@ -43,6 +43,12 @@ const router = createRouter({
             meta: { calcType: CalculatorTypes.FEEDTUBE }
         },
         {
+            path: '/iron',
+            name: CalculatorTypes.IRON,
+            component: CalculatorPage,
+            meta: { calcType: CalculatorTypes.IRON }
+        },
+        {
             path: "/:pathMatch(.*)*",
             redirect: "/"
         }
