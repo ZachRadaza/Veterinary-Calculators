@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { CalculatorTypes } from "../calculators/CaclulatorTypes";
 import { usePatient } from "./Patient";
 
-const _currentCalcType = ref(CalculatorTypes.BSA);
+const _currentCalcType = ref(null);
 
 const currentCalcType = computed(() => _currentCalcType.value);
 const showResults = ref(false);

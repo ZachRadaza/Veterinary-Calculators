@@ -18,36 +18,12 @@ const router = createRouter({
             name: "patient",
             component: PatientPage,
         },
-        {
-            path: "/bsa",
-            name: CalculatorTypes.BSA,
+        ...Object.values(CalculatorTypes).map((calculator) => ({
+            path: calculator.route,
+            name: calculator.name,
             component: CalculatorPage,
-            meta: { calcType: CalculatorTypes.BSA }
-        },
-        {
-            path: "/bromide",
-            name: CalculatorTypes.BROMIDE,
-            component: CalculatorPage,
-            meta: { calcType: CalculatorTypes.BROMIDE }
-        },
-        {
-            path: "/choctox",
-            name: CalculatorTypes.CHOCTOX,
-            component: CalculatorPage,
-            meta: { calcType: CalculatorTypes.CHOCTOX }
-        },
-        {
-            path: '/feedtube',
-            name: CalculatorTypes.FEEDTUBE,
-            component: CalculatorPage,
-            meta: { calcType: CalculatorTypes.FEEDTUBE }
-        },
-        {
-            path: '/iron',
-            name: CalculatorTypes.IRON,
-            component: CalculatorPage,
-            meta: { calcType: CalculatorTypes.IRON }
-        },
+            meta: { calcType: calculator }
+        })),
         {
             path: "/:pathMatch(.*)*",
             redirect: "/"

@@ -1,10 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { CalculatorTypes } from '../calculators/CaclulatorTypes';
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
 
-const currentTab = ref();
+const calcAlphabetMap = computed(() => {
+    const alphaMap = new Map();
+
+    Object.values(CalculatorTypes).forEach(calc => {
+        const startingLetter = calc.name[0].toUpperCase();
+
+        if(alphaMap.has(startingLetter))
+            alphaMap.get(startingLetter).push(calc);
+        else 
+            alphaMap.set(startingLetter, [calc]);
+    });
+
+    return alphaMap;
+});
 
 </script>
 <template>
@@ -13,16 +26,18 @@ const currentTab = ref();
         <h2 class="title">Veterinary Calculators</h2>
         <div class="content-container">
             <div class="calculator-list">
-                <ul>
-                    <li><RouterLink to="/bsa">{{ CalculatorTypes.BSA }}</RouterLink></li>
-                    <li><RouterLink to="/bromide">{{ CalculatorTypes.BROMIDE }}</RouterLink></li>
-                    <li><RouterLink to="/choctox">{{ CalculatorTypes.CHOCTOX }}</RouterLink></li>
-                    <li><RouterLink to="/feedtube">{{ CalculatorTypes.FEEDTUBE }}</RouterLink></li>
-                    <li><RouterLink to="/iron">{{ CalculatorTypes.IRON }}</RouterLink></li>
-                </ul>
+                <div v-for="[letter, calcList] in calcAlphabetMap" class="flex-col calc-letter">
+                    <h3>{{ letter }}</h3>
+                    <ul>
+                        <li v-for="calc in calcList">
+                            <RouterLink :to="calc.route">{{ calc.name }}</RouterLink>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <PatientChooser />
         </div>
+
     </body>
 </template>
 <style scoped>
@@ -47,6 +62,10 @@ body{
 
 .calculator-list{
     padding: 1rem;
+}
+
+.calc-letter{
+    gap: 0;
 }
 
 </style>
