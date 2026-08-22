@@ -17,6 +17,7 @@ import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
+import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -191,14 +192,14 @@ function reset(){
     <!-- end-->
 
     <!-- NaBr stuff-->
-    <CalcRow label="NaBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.NABR">
-        <InputLabel 
-            label="mg/ml" 
-            v-model="naBrData.concentrationML" 
-            :error="calculator.showErrors && naBrData.concentrationML <= 0"
-            class="short"
-        />
-    </CalcRow>
+    <CalcRowInputLabel 
+        label="NaBr Concentration: "
+        v-model="naBrData.concentrationML"
+        v-if="selectedCompound === BromideCompoundChoices.NABR"
+        input-label="mg/ml"
+        :error="calculator.showErrors && naBrData.concentrationML <= 0"
+        class="short"
+    />
     <!--end-->
 
     <CalcRowTwoOptions

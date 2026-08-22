@@ -1,9 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
-import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
-import InputLabel from '../../components/InputLabel.vue';
 import { ChocolateTypes } from './ChocolateTypes.js';
 import { ChocQuantityUnits } from './ChocQuantityUnits.js';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
@@ -12,6 +10,8 @@ import { lbsToKg, roundToThousandth, verifyNumberInput } from '../../utils/Calcu
 import { useCalculator } from '../../composables/Calculator.js';
 import ChocolateToxicityHelper from './ChocolateToxicityHelper.js';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
+import CalcRowInputSelect from '../../components/calculator-rows/CalcRowInputSelect.vue';
+import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -29,10 +29,6 @@ watch(() => chocolateType.value, (chocType) => {
 
 function handleOtherCocoaChange(){
     otherCocoaContent.value = verifyNumberInput(otherCocoaContent.value, 0, 100);
-}
-
-function handleQuantityChange(){
-    quantity.value = verifyNumberInput(quantity.value, 0, 100000);
 }
 
 function calculate(){
@@ -85,31 +81,25 @@ function reset(){
             :show-error="calculator.showErrors.value && chocolateType <= 0"
         />
 
-        <CalcRow label="Enter Cocoa Content: " v-if="chocolateType === ChocolateTypes.COCOAOTHER">
-            <InputLabel 
-                label="%" 
-                v-model="otherCocoaContent" 
-                class="short"
-                @input="handleOtherCocoaChange"
-                :error="calculator.showErrors && otherCocoaContent <= 0"
-            />
-        </CalcRow>
+        <CalcRowInputLabel 
+            label="Enter Cocoa Content: "
+            v-model="otherCocoaContent"
+            v-show="chocolateType === ChocolateTypes.COCOAOTHER"
+            input-label="%"
+            class="short"
+            @input="handleOtherCocoaChange"
+            :error="calculator.showErrors.value && otherCocoaContent <= 0"
+        />
 
-        <CalcRow label="Quantity: ">
-            <div class="flex-row">
-                <input 
-                    v-model="quantity" 
-                    :class="`short ${calculator.showErrors.value && quantity <= 0 ? 'error' : ''}`" 
-                    @input="handleQuantityChange"
-                />
-                <select 
-                    v-model="quantityUnit" 
-                    :class="`short ${calculator.showErrors.value && quantityUnit <= 0 ? 'error' : ''}`" 
-                >
-                    <option v-for="unit in Object.values(ChocQuantityUnits)" :key="unit" :value="unit">{{ unit }}</option>
-                </select>
-            </div>
-        </CalcRow>
+        <CalcRowInputSelect 
+            label="Quantity: "
+            v-model:input="quantity"
+            v-model:select="quantityUnit"
+            class-input="short"
+            class-select="short"
+            :options="Object.values(ChocQuantityUnits)"
+            :error-input="calculator.showErrors.value && quantity <= 0"
+        />
 
         <CalcRowCalculateBtns :calculate="calculate" :reset="reset"/>
         <template #results>
