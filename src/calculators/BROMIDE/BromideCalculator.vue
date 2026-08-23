@@ -18,6 +18,7 @@ import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
+import CalcRowOr from '../../components/calculator-rows/CalcRowOr.vue';
 
 const patient = usePatient();
 const calculator = useCalculator();
@@ -155,31 +156,33 @@ function reset(){
     </CalcRow>
 
     <!-- KBr stuff-->
-    <CalcRow label="KBr Concentration: " v-if="selectedCompound === BromideCompoundChoices.KBR">
-        <div class="kbr-selection flex-col">
-            <div class="radio-div">
-                <input type="radio" :value="KbrConcentrationOptions.ML" v-model="kbrData.concentration" /> 
-                <InputLabel 
-                    label="mg/ml" 
-                    class="short" 
-                    v-model="kbrData.mgMl"
-                    :disabled="kbrData.concentration !== KbrConcentrationOptions.ML"
-                    :error="calculator.showErrors && kbrData.mgMl <= 0"
-                />
-            </div>
-            <h6> - OR - </h6>
-            <div class="radio-div">
-                <input type="radio" :value="KbrConcentrationOptions.TABlET" v-model="kbrData.concentration"/> 
-                <InputLabel 
-                    label="mg/tablet" 
-                    class="short" 
-                    v-model="kbrData.mgTablet" 
-                    :disabled="kbrData.concentration !== KbrConcentrationOptions.TABlET"
-                    :error="calculator.showErrors && kbrData.mgTablet <= 0"
-                />
-            </div>
-        </div>
-    </CalcRow>
+    <CalcRowOr
+        label="KBr Concentration: "
+        v-show="selectedCompound === BromideCompoundChoices.KBR"
+        v-model="kbrData.concentration"
+        :option1-value="KbrConcentrationOptions.ML"
+        :option2-value="KbrConcentrationOptions.TABlET"
+    >
+        <template #option1>
+            <InputLabel 
+                label="mg/ml" 
+                class="short" 
+                v-model="kbrData.mgMl"
+                :disabled="kbrData.concentration !== KbrConcentrationOptions.ML"
+                :error="calculator.showErrors && kbrData.mgMl <= 0"
+            />
+        </template>
+
+        <template #option2>
+            <InputLabel 
+                label="mg/tablet" 
+                class="short" 
+                v-model="kbrData.mgTablet" 
+                :disabled="kbrData.concentration !== KbrConcentrationOptions.TABlET"
+                :error="calculator.showErrors && kbrData.mgTablet <= 0"
+            />
+        </template>
+    </CalcRowOr>
 
     <CalcRowTwoOptions
         label="Taking Rectally: "

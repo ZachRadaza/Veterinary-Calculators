@@ -179,6 +179,17 @@ label:has(input[type="radio"]){
     font-family: var(--font-heading);
 }
 
+/* lists */
+ul, ol{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+li{
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
 /* all */
 :is(input, select).short{
     width: 100px;

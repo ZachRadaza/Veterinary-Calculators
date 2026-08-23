@@ -26,7 +26,7 @@ const calcAlphabetMap = computed(() => {
         <h2 class="title">Veterinary Calculators</h2>
         <div class="content-container">
             <div class="calculator-list">
-                <div v-for="[letter, calcList] in calcAlphabetMap" class="flex-col calc-letter">
+                <div v-for="[letter, calcList] in calcAlphabetMap" class="flex-col">
                     <h3>{{ letter }}</h3>
                     <ul>
                         <li v-for="calc in calcList">
@@ -62,10 +62,6 @@ body{
 
 .calculator-list{
     padding: 1rem;
-}
-
-.calc-letter{
-    gap: 0;
 }
 
 </style>

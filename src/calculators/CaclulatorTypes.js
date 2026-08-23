@@ -4,6 +4,7 @@ import BSACalculator from "./BSA/BSACalculator.vue";
 import ChocolateToxicityCalculator from "./CHOCTOX/ChocolateToxicityCalculator.vue";
 import FeedTubeCalculator from "./FEEDTUBE/FeedTubeCalculator.vue";
 import IronSaltsCalculator from "./IRON/IronSaltsCalculator.vue";
+import NSAIDToxicityCalculator from "./NSAID/NSAIDToxicityCalculator.vue";
 
 export const CalculatorTypes = Object.freeze({
     BSA: {
@@ -30,5 +31,10 @@ export const CalculatorTypes = Object.freeze({
         name: 'Iron Salts',
         route: '/iron',
         component: markRaw(IronSaltsCalculator)
+    },
+    NSAID: {
+        name: 'NSAID Toxicity Calculator',
+        route: '/nsaid',
+        component: markRaw(NSAIDToxicityCalculator)
     }
 });
