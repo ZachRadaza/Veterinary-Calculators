@@ -182,7 +182,7 @@ function reset(){
             v-show="recoveryDiet === RecoveryDietOptions.OTHER"
         >
             <div class="caloric-density flex-col">
-                <div class="radio-div">
+                <div class="radio-row">
                     <input type="radio" :value="true" v-model="densityDirectly"/>
                     <InputLabel 
                         label="kcal/ml"
@@ -194,7 +194,7 @@ function reset(){
                     />
                 </div>
                 <h6> - OR - </h6>
-                <div class="radio-div top">
+                <div class="radio-row top">
                     <input type="radio" :value="false" v-model="densityDirectly"/>
                     <div class="flex-col">
                         <InputLabel 

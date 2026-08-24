@@ -148,7 +148,7 @@ function reset(){
     <CalcRowPatientWeight />
 
     <CalcRow class="nabr-kbr-choice-row" label="Choice of Inorganic Chemical Compounds: ">
-        <div class="radio-col">
+        <div class="radio-row">
             <label v-for="comp in Object.values(BromideCompoundChoices)" :key="comp">
                 <input type="radio" :value="comp" v-model="selectedCompound"/> {{ comp }}
             </label>

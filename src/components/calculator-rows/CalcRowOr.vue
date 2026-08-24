@@ -22,14 +22,14 @@ const radioModel = defineModel();
     <CalcRow :label="label">
         <div class="flex-col">
 
-            <div class="radio-div">
+            <div class="radio-row">
                 <input type="radio" :value="option1Value" v-model="radioModel"/>
                 <slot name="option1" />
             </div>
 
             <h6> - OR - </h6>
 
-            <div class="radio-div">
+            <div class="radio-row">
                 <input type="radio" :value="option2Value" v-model="radioModel"/>
                 <slot name="option2" />
             </div>

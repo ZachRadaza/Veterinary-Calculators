@@ -68,21 +68,21 @@ h1, h2, h3, h4, h5, h6, p{
     text-align: right;
 }
 
+.radio-row{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
 .radio-col{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1rem;
-    align-items: center;
+    margin-top: 0.5rem;
 }
 
-.radio-div{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-}
-
-.radio-div.top{
+.radio-row.top{
     align-items: start;
 }
 

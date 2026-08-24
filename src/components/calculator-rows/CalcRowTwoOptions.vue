@@ -33,7 +33,7 @@ const radioModel = defineModel();
 </script>
 <template>
     <CalcRow :label="label">
-        <div class="radio-col">
+        <div class="radio-row">
             <label>
                 <input type="radio" v-model="radioModel" :value="option1.value" @change="onChange"/> {{ option1.label }}
             </label>
