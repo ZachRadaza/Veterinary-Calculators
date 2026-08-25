@@ -6,6 +6,7 @@ import FeedTubeCalculator from "./FEEDTUBE/FeedTubeCalculator.vue";
 import IronSaltsCalculator from "./IRON/IronSaltsCalculator.vue";
 import NSAIDToxicityCalculator from "./NSAID/NSAIDToxicityCalculator.vue";
 import RodenticideToxicityCalculator from "./RODENTICIDE/RodenticideToxicityCalculator.vue";
+import SteroidConverterCalculator from "./STEROID/SteroidConverterCalculator.vue";
 
 export const CalculatorTypes = Object.freeze({
     BSA: {
@@ -42,5 +43,10 @@ export const CalculatorTypes = Object.freeze({
         name: 'Rodenticide Toxicity',
         route: '/rodenticide',
         component: markRaw(RodenticideToxicityCalculator)
+    }, 
+    STEROID: {
+        name: 'Steroid Converter',
+        route: '/steroid',
+        component: markRaw(SteroidConverterCalculator)
     }
 });
