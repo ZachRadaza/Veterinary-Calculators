@@ -87,7 +87,7 @@ defineExpose({
 </template>
 <style>
 
-.calc-area{
+.calc-area:has(.tab-content){
     padding: 0;
     gap: 0;
 }
