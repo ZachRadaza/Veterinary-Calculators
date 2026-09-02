@@ -94,7 +94,7 @@ function reset(){
             <CalcRow label="To reach desired hematocrit, TRANSFUSE: ">
                 <h5 v-if="result.transfusionRequired">{{ roundToThousandth(result.transfusionVolume) }} ml of Blood</h5>
                 <h5 v-else>
-                    No transfusion volume indicated—the target HCT does not exceed the current HCT.
+                    No transfusion volume indicated, the target HCT does not exceed the current HCT.
                 </h5>
             </CalcRow>
         </template>

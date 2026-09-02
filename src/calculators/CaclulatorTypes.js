@@ -8,6 +8,7 @@ import NSAIDToxicityCalculator from "./NSAID/NSAIDToxicityCalculator.vue";
 import RodenticideToxicityCalculator from "./RODENTICIDE/RodenticideToxicityCalculator.vue";
 import SteroidConverterCalculator from "./STEROID/SteroidConverterCalculator.vue";
 import TransfusionVolumeCalculator from "./TRANSFUSION/TransfusionVolumeCalculator.vue";
+import UnitConversionCalculator from "./UNIT/UnitConversionCalculator.vue";
 
 export const CalculatorTypes = Object.freeze({
     BSA: {
@@ -54,5 +55,10 @@ export const CalculatorTypes = Object.freeze({
         name: 'Transfusion Volume',
         route: '/transfusion',
         component: markRaw(TransfusionVolumeCalculator)
+    },
+    UNIT: {
+        name: 'Unit Conversion',
+        route: '/unit',
+        component: markRaw(UnitConversionCalculator)
     }
 });
