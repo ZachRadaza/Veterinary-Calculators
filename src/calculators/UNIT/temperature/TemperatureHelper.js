@@ -2,10 +2,10 @@ import { TemperatureConversionUnits } from "./TemperatureConversionUnits";
 
 const TemperatureHelper = {
 
-    temparatureCalculateConversion(amount, conversionTo){
+    temparatureCalculateConversion(amount, toUnit){
         const amountNum = Number(amount);
         let result;
-        if(conversionTo === TemperatureConversionUnits.CELSIUS)
+        if(toUnit === TemperatureConversionUnits.CELSIUS)
             result = this.convertToCelsius(amountNum);
         else
             result = this.convertToFahrenheit(amountNum);
@@ -17,10 +17,10 @@ const TemperatureHelper = {
         const amountF = (amount * (9 / 5)) + 32;
 
         return{
-            conversionFrom: TemperatureConversionUnits.CELSIUS,
-            conversionFromAmount: amount,
-            conversionTo: TemperatureConversionUnits.FAHRENHEIT,
-            conversionToAmount: amountF
+            fromUnit: TemperatureConversionUnits.CELSIUS,
+            fromAmount: amount,
+            toUnit: TemperatureConversionUnits.FAHRENHEIT,
+            toAmount: amountF
         };
     },
 
@@ -28,10 +28,10 @@ const TemperatureHelper = {
         const amountC = (amount - 32) * (5 / 9) ;
 
         return{
-            conversionFrom: TemperatureConversionUnits.CELSIUS,
-            conversionFromAmount: amount,
-            conversionTo: TemperatureConversionUnits.FAHRENHEIT,
-            conversionToAmount: amountC
+            fromUnit: TemperatureConversionUnits.FAHRENHEIT,
+            fromAmount: amount,
+            toUnit: TemperatureConversionUnits.CELSIUS,
+            toAmount: amountC
         };
     }
 };

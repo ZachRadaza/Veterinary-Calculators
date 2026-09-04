@@ -1,33 +1,18 @@
 <script setup>
 defineProps({
-    amountFrom: {
-        type: Number,
+    results: {
+        type: Object,
         required: true,
-        default: 0
-    },
-    amountTo: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    unitFrom: {
-        type: String,
-        required: true,
-        default: ''
-    },
-    unitTo: {
-        type: String,
-        required: true,
-        default: ''
+        default: null
     }
 })
 
 </script>
 <template>
     <h5>
-        {{ amountFrom }} {{ unitFrom }}
+        {{ results.fromAmount }} {{ results.fromUnit }}
         = 
-        {{ amountTo }} {{ unitTo}}
+        {{ results.toAmount }} {{ results.toUnit}}
     </h5>    
 </template>
 <style scoped>

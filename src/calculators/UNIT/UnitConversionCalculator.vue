@@ -5,7 +5,6 @@ import { UnitConversionTabs } from './UnitConversionTabs.js';
 import { useCalculator } from '../../composables/Calculator.js';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import { BloodTestCategories } from './blood/BloodTestCategories.js';
-import CalcRowInput from '../../components/calculator-rows/CalcRowInput.vue';
 import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
 import { BloodTestConversionUnits } from './blood/BloodTestConversionUnits.js';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
@@ -20,9 +19,9 @@ import { VolumeConversionUnits } from './volume/VolumeConversionUnits.js';
 import { WeightConversionUnits } from './weight/WeightConversionUnits.js';
 import UnitConversionTabContent from './UnitConversionTabContent.vue';
 import UnitConversionTabResult from './UnitConversionTabResult.vue';
-import UnitConversionHelper from './UnitConversionHelper.js';
 import { TimeConversionUnits } from './time/TimeConversionUnits.js';
 import LengthConversionUnits from './length/LengthConversionUnits.js';
+import { useUnitConversionGeneral } from './UnitConversionGeneral.js';
 
 const tabTemplate = ref(null);
 const sameUnitDialog = ref(null);
@@ -176,107 +175,16 @@ function temperatureReset(){
 }
 // end of temperature -------------------------------------
 // Volume tab --------------------------------------------
-const volumeValues = ref({
-    amount: 0,
-    unitFrom: Object.keys(VolumeConversionUnits)[0],
-    unitTo: Object.keys(VolumeConversionUnits)[1]
-});
-const volumeResults = ref(null);
+const volume = useUnitConversionGeneral(VolumeConversionUnits);
 
-function volumeCalculate(){
-    volumeResults.value = UnitConversionHelper.calculateConversion(
-        volumeValues.value.amount,
-        volumeValues.value.unitFrom,
-        volumeValues.value.unitTo,
-        VolumeConversionUnits
-    );
-}
-
-function volumeReset(){
-    volumeValues.value = {
-        amount: 0,
-        unitFrom: Object.keys(VolumeConversionUnits)[0],
-        unitTo: Object.keys(VolumeConversionUnits)[1]
-    };
-}
-
-// end of volume --------------------------------------
 // Weight Tab -----------------------------------------
-const weightValues = ref({
-    amount: 0,
-    unitFrom: Object.keys(WeightConversionUnits)[0],
-    unitTo: Object.keys(WeightConversionUnits)[1]
-});
-const weightResults = ref(null);
+const weight = useUnitConversionGeneral(WeightConversionUnits);
 
-function weightCalculate(){
-    weightResults.value = UnitConversionHelper.calculateConversion(
-        weightValues.value.amount,
-        weightValues.value.unitFrom,
-        weightValues.value.unitTo,
-        WeightConversionUnits
-    );
-}
-
-function weightReset(){
-    weightValues.value = {
-        amount: 0,
-        unitFrom: Object.keys(WeightConversionUnits)[0],
-        unitTo: Object.keys(WeightConversionUnits)[1]
-    };
-}
-
-// end of weight tab --------------------------------
 // time tab ----------------------------------------
-const timeValues = ref({
-    amount: 0,
-    unitFrom: Object.keys(TimeConversionUnits)[0],
-    unitTo: Object.keys(TimeConversionUnits)[1]
-});
-const timeResults = ref(null);
+const time = useUnitConversionGeneral(TimeConversionUnits);
 
-function timeCalculate(){
-    timeResults.value = UnitConversionHelper.calculateConversion(
-        timeValues.value.amount,
-        timeValues.value.unitFrom,
-        timeValues.value.unitTo,
-        TimeConversionUnits
-    );
-}
-
-function timeReset(){
-    timeValues.value = {
-        amount: 0,
-        unitFrom: Object.keys(TimeConversionUnits)[0],
-        unitTo: Object.keys(TimeConversionUnits)[1]
-    };
-}
-
-// end of time tab -----------------------------------
 // Length tab --------------------------------------
-const lengthValues = ref({
-    amount: 0,
-    unitFrom: Object.keys(LengthConversionUnits)[0],
-    unitTo: Object.keys(LengthConversionUnits)[1]
-});
-const lengthResults = ref(null);
-
-function lengthCalculate(){
-    lengthResults.value = UnitConversionHelper.calculateConversion(
-        lengthValues.value.amount,
-        lengthValues.value.unitFrom,
-        lengthValues.value.unitTo,
-        LengthConversionUnits
-    );
-}
-
-function lengthReset(){
-    lengthValues.value = {
-        amount: 0,
-        unitFrom: Object.keys(LengthConversionUnits)[0],
-        unitTo: Object.keys(LengthConversionUnits)[1]
-    };
-}
+const length = useUnitConversionGeneral(LengthConversionUnits);
 
 </script>
 <template>
@@ -366,98 +274,83 @@ function lengthReset(){
 
         <template #[`result-${UnitConversionTabs.TAB2}`]>
             <UnitConversionTabResult 
-                :amount-from="temperatureResults.conversionFromAmount"
-                :amount-to="temperatureResults.conversionToAmount"
-                :unit-from="temperatureResults.conversionFrom"
-                :unit-to="temperatureResults.conversionTo"
+                :results="temperatureResults"
             />
         </template>
 
         <!-- Volume -->
         <template #[UnitConversionTabs.TAB3]>
             <UnitConversionTabContent 
-                v-model:amount="volumeValues.amount"
-                v-model:unit-from="volumeValues.unitFrom"
-                v-model:unit-to="volumeValues.unitTo"
+                v-model:amount="volume.amount.value"
+                v-model:unit-from="volume.unitFrom.value"
+                v-model:unit-to="volume.unitTo.value"
                 :units="VolumeConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB3)"
-                @calculate="volumeCalculate"
-                @reset="volumeReset"
+                @calculate="volume.calculate"
+                @reset="volume.reset"
             />
         </template>
 
         <template #[`result-${UnitConversionTabs.TAB3}`]>
             <UnitConversionTabResult 
-                :amount-from="volumeResults.fromAmount"
-                :amount-to="volumeResults.toAmount"
-                :unit-from="volumeResults.fromUnit"
-                :unit-to="volumeResults.toUnit"
+                :results="volume.results.value"
             />
         </template>
 
         <!-- Wegiht -->
         <template #[UnitConversionTabs.TAB4]>
             <UnitConversionTabContent 
-                v-model:amount="weightValues.amount"
-                v-model:unit-from="weightValues.unitFrom"
-                v-model:unit-to="weightValues.unitTo"
+                v-model:amount="weight.amount.value"
+                v-model:unit-from="weight.unitFrom.value"
+                v-model:unit-to="weight.unitTo.value"
                 :units="WeightConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB4)"
-                @calculate="weightCalculate"
-                @reset="weightReset"
+                @calculate="weight.calculate"
+                @reset="weight.reset"
             />
         </template>
 
         <template #[`result-${UnitConversionTabs.TAB4}`]>
             <UnitConversionTabResult 
-                :amount-from="weightResults.fromAmount"
-                :amount-to="weightResults.toAmount"
-                :unit-from="weightResults.fromUnit"
-                :unit-to="weightResults.toUnit"
+                :results="weight.results.value"
             />
         </template>
 
         <!-- Time -->
         <template #[UnitConversionTabs.TAB5]>
             <UnitConversionTabContent 
-                v-model:amount="timeValues.amount"
-                v-model:unit-from="timeValues.unitFrom"
-                v-model:unit-to="timeValues.unitTo"
+                v-model:amount="time.amount.value"
+                v-model:unit-from="time.unitFrom.value"
+                v-model:unit-to="time.unitTo.value"
                 :units="TimeConversionUnits"
-                :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB4)"
-                @calculate="timeCalculate"
-                @reset="timeReset"
+                :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB5)"
+                @calculate="time.calculate"
+                @reset="time.reset"
             />
         </template>
 
         <template #[`result-${UnitConversionTabs.TAB5}`]>
             <UnitConversionTabResult 
-                :amount-from="timeResults.fromAmount"
-                :amount-to="timeResults.toAmount"
-                :unit-from="timeResults.fromUnit"
-                :unit-to="timeResults.toUnit"
+                :results="time.results.value"
             />
         </template>
 
         <!-- Length -->
         <template #[UnitConversionTabs.TAB6]>
             <UnitConversionTabContent 
-                v-model:amount="lengthValues.amount"
-                v-model:unit-from="lengthValues.unitFrom"
-                v-model:unit-to="lengthValues.unitTo"
+                v-model:amount="length.amount.value"
+                v-model:unit-from="length.unitFrom.value"
+                v-model:unit-to="length.unitTo.value"
                 :units="LengthConversionUnits"
-                :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB4)"
-                @calculate="lengthCalculate"
-                @reset="lengthReset"
+                :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB6)"
+                @calculate="length.calculate"
+                @reset="length.reset"
             />
         </template>
 
         <template #[`result-${UnitConversionTabs.TAB6}`]>
             <UnitConversionTabResult 
-                :amount-from="lengthResults.fromAmount"
-                :amount-to="lengthResults.toAmount"
-                :unit-from="lengthResults.fromUnit"
-                :unit-to="lengthResults.toUnit"
+                :results="length.results.value"
             />
         </template>
     </CalculatorTabsTemplate>
