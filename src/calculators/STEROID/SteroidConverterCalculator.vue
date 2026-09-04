@@ -20,12 +20,12 @@ const dialogSameSteroid = ref(null);
 
 const glucData = ref({
     steroidFrom: Object.keys(SteroidDrugs)[0],
-    steroidTo: Object.keys(SteroidDrugs)[0],
+    steroidTo: Object.keys(SteroidDrugs)[1],
     dose: 0
 });
 const mineData = ref({
     steroidFrom: Object.keys(SteroidDrugs)[0],
-    steroidTo: Object.keys(SteroidDrugs)[0],
+    steroidTo: Object.keys(SteroidDrugs)[1],
     dose: 0
 })
 
@@ -115,7 +115,7 @@ function resetMine(){
             label="Dose: "
             v-model="glucData.dose"
             input-label="mg"
-            :error="calculator.showErrors.value && glucData.dose <= 0 && tabTemplate.showErrors(SteroidConverterTabs.TAB1)"
+            :error="calculator.showErrors.value && glucData.dose <= 0 && tabTemplate?.showErrors(SteroidConverterTabs.TAB1)"
             :has-default-num-bounds-check="true"
             class="short"
         />
@@ -163,7 +163,7 @@ function resetMine(){
             label="Dose: "
             v-model="mineData.dose"
             input-label="mg"
-            :error="calculator.showErrors.value && mineData.dose <= 0 && tabTemplate.showErrors(SteroidConverterTabs.TAB2)"
+            :error="calculator.showErrors.value && mineData.dose <= 0 && tabTemplate?.showErrors(SteroidConverterTabs.TAB2)"
             :has-default-num-bounds-check="true"
             class="short"
         />

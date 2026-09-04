@@ -1,4 +1,4 @@
 export const BloodTestConversionUnits = Object.freeze({
-    UStoSI: 'US -> SI',
-    SItoUS: 'SI -> US'
+    UStoSI: 'US to SI',
+    SItoUS: 'SI to US'
 })

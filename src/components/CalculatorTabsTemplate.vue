@@ -72,16 +72,14 @@ defineExpose({
     </div>
 
     <template #results>
-        <div 
+        <template 
             v-for="tab in tabNames" 
             :key="`result-${tab}`"
-            class="flex-col"
         >
-            <slot 
-                v-if="currentTab === tab"
-                :name="`result-${tab}`"
-            />
-        </div>
+            <div class="flex-col" v-if="currentTab === tab">
+                <slot :name="`result-${tab}`" />
+            </div>
+        </template>
     </template>
 </CalculatorTemplate>
 </template>
