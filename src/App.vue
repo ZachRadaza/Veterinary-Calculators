@@ -1,5 +1,22 @@
 <script setup>
+import { onAuthStateChanged } from 'firebase/auth';
+import { onMounted, onUnmounted } from 'vue';
+import { auth } from './Firebase';
+import { useUser } from './composables/User';
 
+const user = useUser();
+
+let stopAuthListener;
+
+onMounted(() => {
+    stopAuthListener = onAuthStateChanged(auth, (userAuth) => {
+        user.getCurrentUser();
+    });
+});
+
+onUnmounted(() => {
+    stopAuthListener?.();    
+});
 </script>
 <template>
     <RouterView />
@@ -176,6 +193,20 @@ input[type="radio"]{
 label:has(input[type="radio"]){
     font-size: 1.2rem;
     font-weight: 500;
+    font-family: var(--font-heading);
+}
+
+/* Checkbox */
+input[type="checkbox"]{
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-secondary);
+    border-radius: 0;
+}
+
+label:has(input[type="checkbox"]){
+    font-size: 1.0rem;
+    font-weight: 400;
     font-family: var(--font-heading);
 }
 
