@@ -19,16 +19,73 @@ watch(() => patient.currentPatientId.value, (patientId) => {
     selectedPatientId.value = patientId;
 });
 
+function handleSearch(){
+    if(!patientInput.value)
+        return;
+
+    const input = patientInput.value.toLowerCase();
+
+    const scoredNames = patient.patientsList.value.map((pat) => {
+        const name = pat.name.toLowerCase();
+        let score = 0;
+
+        if(name === input)
+            score = 100;
+        else if(name.startsWith(input))
+            score = 75;
+        else if (name.includes(input))
+            score = 50;
+        else
+            score = getFuzzyScore(name, input);
+
+        return { id: pat.id, score };
+    });
+
+    scoredNames.sort((a, b) => b.score - a.score);
+
+    patient.setCurrentPatientId(scoredNames[0].id ?? -1);
+}
+
+function getFuzzyScore(name, query){
+    let queryIndex = 0;
+    let score = 0;
+
+    for (let nameIndex = 0; nameIndex < name.length; nameIndex++) {
+        if (name[nameIndex] === query[queryIndex]) {
+            score++;
+            queryIndex++;
+        }
+
+        if (queryIndex === query.length)
+            return score;
+    }
+
+    return 0;
+}
+
 </script>
 <template>
     <div class="patient-chooser">
         <div class="patient-input">
+
             <select v-model="selectedPatientId">
                 <option value="-1">Select Patient</option>
                 <option v-for="pat in patient.patientsList.value" :value="pat?.id">{{ pat?.name }}</option>
             </select>
-            <input v-model="patientInput" placeholder="Patient Name"/>
-            <button class="secondary">Search</button>
+
+            <input 
+                v-model="patientInput" 
+                placeholder="Patient Name"
+                @keyup.enter="handleSearch"
+            />
+
+            <button 
+                @click="handleSearch"
+                class="secondary"
+            >
+                Search
+            </button>
+
         </div>
         <div v-if="currentPatient" class="patient-info">
             <h5>
