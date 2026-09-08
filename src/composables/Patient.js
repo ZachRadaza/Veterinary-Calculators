@@ -13,7 +13,6 @@ const patientsList = computed(() =>
     [..._patients.value?.values()]
 );
 const currentPatient = computed(() => _patients.value.get(_currentPatientId.value) ?? null);
-const currentPatientAge = computed(() => currentPatient.value.dateOfBirth);
 
 const validInputtedPatientWeight = computed(() => inputtedPatient?.value?.weight > 0);
 const validInputtedPatientSpecies = computed(() => Object.values(PatientSpecies).includes(inputtedPatient?.value?.species));
@@ -127,7 +126,7 @@ export function usePatient(){
     }
 
     return {
-        currentPatient, currentPatientId, patients, currentPatientAge, inputtedPatient, patientsList, 
+        currentPatient, currentPatientId, patients, inputtedPatient, patientsList, 
         validInputtedPatientSpecies, validInputtedPatientWeight, currentAndInputtedWeightEqual,
         loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient,
         addPatient, editPatient, deletePatient

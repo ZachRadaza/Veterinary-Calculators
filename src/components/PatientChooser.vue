@@ -1,11 +1,15 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { usePatient } from '../composables/Patient';
+import { getAge } from '../utils/DateUtils';
 
 const patient = usePatient();
+
 const selectedPatientId = ref(patient.currentPatientId.value || -1);
 const patientInput = ref('');
+
 const currentPatient = computed(() => patient.currentPatient?.value ?? null);
+const currentPatientAge = computed(() => getAge(currentPatient.value?.dateOfBirth));
 
 watch(() => selectedPatientId.value, (newlySelectedId) => {
     patient.setCurrentPatientId(newlySelectedId);
@@ -94,7 +98,7 @@ function getFuzzyScore(name, query){
                 {{ currentPatient?.breed }} | 
                 {{ currentPatient?.weight }} lbs | 
                 {{ currentPatient?.sex }} | 
-                {{ patient.currentPatientAge}}
+                {{ currentPatientAge }}
             </h5>
         </div>
     </div>
