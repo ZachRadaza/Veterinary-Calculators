@@ -1,9 +1,49 @@
 <script setup>
+import { computed, ref } from 'vue';
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
 import { usePatient } from '../composables/Patient.js';
+import DialogModifyPatient from '../components/dialogs/DialogModifyPatient.vue';
+import DialogBoolean from '../components/dialogs/DialogBoolean.vue';
 
 const patient = usePatient();
+
+const disablePatientModifyBtns = computed(() => patient.currentPatientId.value === -1);
+
+const dialogModifyPatient = ref(null);
+const isPatientEditing = ref(false);
+const isDialogModifyPatientLoading = ref(false);
+
+const dialogDeletePatientConfirm = ref(false);
+
+const selectedPatient = computed(() => patient.currentPatient);
+
+function handleAddPatient(){
+    patient.setCurrentPatientId(-1);
+    isPatientEditing.value = false;
+    dialogModifyPatient.value.openDialog();
+}
+
+function handleEditPatient(){
+    isPatientEditing.value = true;
+    dialogModifyPatient.value.openDialog();
+}
+
+async function handleModifyPatientSave(modifiedPatient){
+    isDialogModifyPatientLoading.value = true;
+    if(isPatientEditing.value){
+        await patient.editPatient(modifiedPatient);
+    } else {
+        await patient.addPatient(modifiedPatient);
+    }
+
+    isDialogModifyPatientLoading.value = false;
+    dialogModifyPatient.value.closeDialog();
+}
+
+async function handleDeletePatient(){
+    dialogDeletePatientConfirm.value?.openDialog();
+}
 
 </script>
 <template>
@@ -25,9 +65,19 @@ const patient = usePatient();
                         </div>
                     </div>
                     <div class="buttons-cont">
-                        <button>Add Patient</button>
-                        <button :disabled="patient.currentPatientId.value === -1">Edit/View Patient</button>
-                        <button :disabled="patient.currentPatientId.value === -1">Remove Patient</button>
+                        <button @click="handleAddPatient">Add Patient</button>
+                        <button 
+                            @click="handleEditPatient"
+                            :disabled="disablePatientModifyBtns"
+                        >
+                            Edit/View Patient
+                        </button>
+                        <button 
+                            @click="handleDeletePatient"
+                            :disabled="disablePatientModifyBtns"
+                        >
+                            Remove Patient
+                        </button>
                         <button @click="patient.setCurrentPatientId(-1)">Clear Section</button>
                     </div>
                 </div>
@@ -46,6 +96,22 @@ const patient = usePatient();
             </div>
             <PatientChooser />
         </div>
+
+        <DialogModifyPatient 
+            ref="dialogModifyPatient"
+            :is-editing="isPatientEditing"
+            :patient="selectedPatient.value"
+            @save="handleModifyPatientSave"
+            :loading="isDialogModifyPatientLoading"
+        />
+
+        <DialogBoolean 
+            title="Confirm Delete Patient"
+            ref="dialogDeletePatientConfirm"
+            :descriptions="['Are you sure you want to delete this patient? This action cannot be undone.']"
+            :option-true="{ text: 'Delete Patient', action: async () => await patient.deletePatient(patient.currentPatientId.value) }"
+            :option-false="{ text: 'Cancel', action: () => dialogDeletePatientConfirm.closeDialog() }"
+        />
     </body>
 </template>
 <style scoped>

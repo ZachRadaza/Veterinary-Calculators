@@ -9,6 +9,10 @@ defineProps({
     error: {
         type: Boolean,
         default: false
+    },
+    isTextArea: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -21,7 +25,13 @@ const input = defineModel();
         <input 
             v-model="input" 
             v-bind="$attrs"
+            v-if="!isTextArea"
         />
+        <textarea
+            v-model="input" 
+            v-bind="$attrs"
+            v-else
+        ></textarea>
     </div>
 </template>
 <style scoped>
