@@ -1,6 +1,7 @@
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import PatientService from "../services/PatientService";
 import { PatientSpecies } from "../utils/PatientSpecies";
+import { useUser } from "./User";
 
 const _currentPatientId = ref(0);
 const _patients = ref(new Map());
@@ -12,7 +13,7 @@ const patientsList = computed(() =>
     [..._patients.value?.values()]
 );
 const currentPatient = computed(() => _patients.value.get(_currentPatientId.value) ?? null);
-const currentPatientAge = computed(() => currentPatient.value.dob);
+const currentPatientAge = computed(() => currentPatient.value.dateOfBirth);
 
 const validInputtedPatientWeight = computed(() => inputtedPatient?.value?.weight > 0);
 const validInputtedPatientSpecies = computed(() => Object.values(PatientSpecies).includes(inputtedPatient?.value?.species));
@@ -21,12 +22,16 @@ const currentAndInputtedWeightEqual = computed(() => currentPatient.value?.weigh
 export function usePatient(){
     
     async function init(){
-        await loadListOfPatients();
+        const user = useUser();
+
+        watch(user.userId, async (userId) => {
+            await loadListOfPatients(userId);
+        });
     }
 
-    async function loadListOfPatients(){
+    async function loadListOfPatients(userId){
         try{
-            const patientsList = await PatientService.getPatients('');
+            const patientsList = await PatientService.getPatients(userId);
             const patientsMap = new Map();
 
             patientsList.map((patients) => {
@@ -69,9 +74,62 @@ export function usePatient(){
         return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
     }
 
+    async function addPatient(patient){
+        try{
+            const user = useUser();
+            const addedPatient =  await PatientService.addPatient(
+                user.userId.value,
+                patient.name,
+                patient.species,
+                patient.breed,
+                patient.weight,
+                patient.sex,
+                patient.dateOfBirth,
+                patient.patientNum,
+                patient.clientName,
+                patient.color,
+                patient.comments
+            );
+            
+            if(!addedPatient)
+                return null;
+
+            _patients.value.set(addedPatient.id, addedPatient);
+            return addedPatient;
+        } catch(error){
+            console.error('Error in adding patient', error);
+        }
+    }
+
+    async function editPatient(patient){
+        try{
+            const user = useUser();
+
+            const editedPatient =  await PatientService.updatePatient(user.userId.value, patient.id, patient);
+            
+            _patients.value.set(editedPatient.id, editedPatient);
+            return editedPatient;
+        } catch(error){
+            console.error('Error in editing patient', error);
+        }
+    }
+
+    async function deletePatient(patientId){
+        try{
+            const user = useUser();
+
+            await PatientService.deletePatient(user.userId.value, patientId);
+
+            _patients.value.delete(patientId);
+        } catch(error){
+            console.error('Error in deleting patient', error);
+        }
+    }
+
     return {
         currentPatient, currentPatientId, patients, currentPatientAge, inputtedPatient, patientsList, 
         validInputtedPatientSpecies, validInputtedPatientWeight, currentAndInputtedWeightEqual,
-        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient
+        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient,
+        addPatient, editPatient, deletePatient
     }
 }

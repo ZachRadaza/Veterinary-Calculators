@@ -230,7 +230,8 @@ li{
     width: 350px;
 }
 
-:is(input, textarea, select).error{
+:is(input, textarea, select).error,
+:is(input, textarea, select):user-invalid{
     border-color: var(--color-error);
     outline: var(--color-error);
 }

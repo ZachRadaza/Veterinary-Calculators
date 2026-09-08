@@ -2,7 +2,7 @@ import { browserLocalPersistence, browserSessionPersistence, createUserWithEmail
 import { auth, db } from "../Firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-const USERS_COLLECTION = 'users';
+export const USERS_COLLECTION = 'users';
 
 const UsersService = {
 

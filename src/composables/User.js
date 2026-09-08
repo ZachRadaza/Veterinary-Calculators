@@ -4,6 +4,7 @@ import UsersService from "../services/UsersService";
 const user = ref(null);
 
 const isLoggedIn = computed(() => !!user.value);
+const userId = computed(() => user.value?.id ?? '');
 
 export function useUser(){
 
@@ -75,7 +76,7 @@ export function useUser(){
     }
 
     return {
-        user, isLoggedIn,
+        user, isLoggedIn, userId,
         login, signUp, logout, getCurrentUser
     };
 }

@@ -27,6 +27,10 @@ const { label, error } = defineProps({
     hasDefaultNumBoundsCheck: {
         type: Boolean,
         default: true,
+    },
+    isRequired: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -41,15 +45,14 @@ onMounted(() => {
 const inputModel = defineModel();
 </script>
 <template>
-    <CalcRow :label="label">
+    <CalcRow :label="label" :is-required="isRequired">
         <InputLabel 
             :label="inputLabel" 
             v-model="inputModel" 
             :disabled="disabled" 
             :error="error"
-            :class="`${$attrs.class}`"
-            @input="$attrs.onInput"
             :has-default-num-bounds-check="hasDefaultNumBoundsCheck"
+            v-bind="$attrs"
         />
         
         <DialogInfo 

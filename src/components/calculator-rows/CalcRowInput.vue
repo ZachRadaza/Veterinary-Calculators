@@ -18,6 +18,10 @@ const { hasDefaultNumBoundsCheck, error, label } = defineProps({
     hasDefaultNumBoundsCheck: {
         type: Boolean,
         default: true,
+    },
+    isRequired: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -36,7 +40,7 @@ onMounted(() => {
 
 </script>
 <template>
-    <CalcRow :label="label">
+    <CalcRow :label="label" :is-required="isRequired">
     
         <input 
             v-model="inputModel"

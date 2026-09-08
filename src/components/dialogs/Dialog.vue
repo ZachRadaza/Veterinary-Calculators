@@ -18,11 +18,13 @@ defineExpose({
 </script>
 <template>
     <dialog ref="dialogRef">
-        <IconButton @click="dialogRef.close()" :icon="CloseIcon" class="dialog-close no-bg"/>
+        <IconButton @click="dialogRef.close()" :icon="CloseIcon" class="dialog-close no-bg" formnovalidate/>
 
         <h4 v-if="title" class="title">{{ title }}</h4>
 
-        <slot />
+        <div class="flex-col dialog-content">
+            <slot />
+        </div>
 
         <div class="btns-cont flex-row">
             <slot name="buttons"/>
@@ -55,6 +57,10 @@ dialog[open]{
 .btns-cont{
     align-items: center;
     justify-content: center;
+}
+
+.dialog-content{
+    overflow: auto;
 }
 
 </style>

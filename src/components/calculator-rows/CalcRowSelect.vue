@@ -26,6 +26,10 @@ const { label } = defineProps({
     postOptionText: {
         type: String,
         default: ''
+    },
+    isRequired: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -41,7 +45,7 @@ onMounted(() => {
 
 </script>
 <template>
-    <CalcRow :label="label">
+    <CalcRow :label="label" :is-required="isRequired">
         <select 
             v-model="selectModel" 
             :class="`${showError ? 'error' : ''}`" 
