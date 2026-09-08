@@ -9,7 +9,7 @@ const username = computed(() => user.user.value?.username);
 </script>
 <template>
     <header>
-        <h4>Veterinary Calculators</h4>
+        <RouterLink to="/"><h4>Veterinary Calculators</h4></RouterLink>
         <div class="directory">
             <RouterLink to="/"><h5>Home</h5></RouterLink>
             <RouterLink to="/patient"><h5>Patients</h5></RouterLink>
