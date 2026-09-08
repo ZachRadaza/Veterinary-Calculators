@@ -8,15 +8,11 @@ import DialogBoolean from '../components/dialogs/DialogBoolean.vue';
 
 const patient = usePatient();
 
+// patients values
 const disablePatientModifyBtns = computed(() => patient.currentPatientId.value === -1);
-
 const dialogModifyPatient = ref(null);
 const isPatientEditing = ref(false);
-const isDialogModifyPatientLoading = ref(false);
-
 const dialogDeletePatientConfirm = ref(false);
-
-const selectedPatient = computed(() => patient.currentPatient);
 
 function handleAddPatient(){
     patient.setCurrentPatientId(-1);
@@ -27,18 +23,6 @@ function handleAddPatient(){
 function handleEditPatient(){
     isPatientEditing.value = true;
     dialogModifyPatient.value.openDialog();
-}
-
-async function handleModifyPatientSave(modifiedPatient){
-    isDialogModifyPatientLoading.value = true;
-    if(isPatientEditing.value){
-        await patient.editPatient(modifiedPatient);
-    } else {
-        await patient.addPatient(modifiedPatient);
-    }
-
-    isDialogModifyPatientLoading.value = false;
-    dialogModifyPatient.value.closeDialog();
 }
 
 async function handleDeletePatient(){
@@ -100,9 +84,6 @@ async function handleDeletePatient(){
         <DialogModifyPatient 
             ref="dialogModifyPatient"
             :is-editing="isPatientEditing"
-            :patient="selectedPatient.value"
-            @save="handleModifyPatientSave"
-            :loading="isDialogModifyPatientLoading"
         />
 
         <DialogBoolean 

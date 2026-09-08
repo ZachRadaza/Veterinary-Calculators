@@ -9,24 +9,15 @@ import { PatientSex } from '../../utils/PatientSex.js';
 import LabeledInput from '../LabeledInput.vue';
 import { formatDateForInput } from '../../utils/DateUtils.js';
 import CalcRowInputLabel from '../calculator-rows/CalcRowInputLabel.vue';
+import { usePatient } from '../../composables/Patient.js';
 
-const { isEditing, patient } = defineProps({
+const { isEditing } = defineProps({
     isEditing: {
         type: Boolean,
         required: true,
         default: false
-    },
-    patient: {
-        required: true,
-        default: {}
-    },
-    loading: {
-        type: Boolean,
-        default: false
     }
 });
-
-const emitEvent = defineEmits(['save']);
 
 const defaultPatientInput = Object.freeze({
     name: '', 
@@ -41,13 +32,18 @@ const defaultPatientInput = Object.freeze({
     comments: ''
 });
 
+const patient = usePatient();
+
 const dialogRef = ref(null);
 const patientInputCopy = ref({...defaultPatientInput});
+const loading = ref(false);
 
-const dialogTitle = computed(() => isEditing ? 'Edit/View Patient' : 'Add Patient');
+const dialogTitle = computed(() => isEditing ? 'Edit Patient' : 'Add Patient');
 
 function openDialog(){
-    patientInputCopy.value = patient ? {...patient} : {...defaultPatientInput};
+    patientInputCopy.value = patient.currentPatient.value 
+        ? {...patient.currentPatient.value} 
+        : {...defaultPatientInput};
 
     dialogRef.value?.dialogRef?.showModal();
 }
@@ -56,8 +52,16 @@ function closeDialog(){
     dialogRef.value?.dialogRef?.close();
 }
 
-function handleSave(){
-    emitEvent('save', patientInputCopy.value);
+async function handleSave(){
+    loading.value = true;
+    if(isEditing){
+        await patient.editPatient(patientInputCopy.value);
+    } else {
+        await patient.addPatient(patientInputCopy.value);
+    }
+
+    loading.value = false;
+    closeDialog();
 }
 
 defineExpose({
@@ -151,7 +155,7 @@ defineExpose({
             <template #buttons>
                 <button 
                     type="submit" 
-                    :disabled="loading"
+                    :disabled="loading.value"
                     id="modify-patient-btn"
                 >
                     {{ dialogTitle }}
