@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
 import { ChocolateTypes } from './ChocolateTypes.js';
@@ -12,15 +12,26 @@ import ChocolateToxicityHelper from './ChocolateToxicityHelper.js';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalcRowInputSelect from '../../components/calculator-rows/CalcRowInputSelect.vue';
 import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const patient = usePatient();
 const calculator = useCalculator();
+const calculation = useCalculation();
 
 const chocolateType = ref(0);
 const otherCocoaContent = ref('0');
 const quantity = ref('0');
 const quantityUnit = ref(ChocQuantityUnits.OZ);
 const results = ref(null);
+
+onMounted(() => {
+    calculation.init({
+        chocolateType,
+        otherCocoaContent,
+        quantity,
+        quantityUnit
+    }, calculate);
+});
 
 watch(() => chocolateType.value, (chocType) => {
     if(chocType === ChocolateTypes.COCOAOTHER)
@@ -70,7 +81,12 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate @save-calculation-clicked="calculation.setCalculationValue({
+        chocolateType,
+        otherCocoaContent,
+        quantity,
+        quantityUnit,
+    })">
         <CalcRowPatientWeight />
 
         <CalcRowSelect 

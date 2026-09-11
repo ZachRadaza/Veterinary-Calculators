@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
 import CalcRowPatientSpecies from '../../components/calculator-rows/CalcRowPatientSpecies.vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
@@ -8,11 +8,17 @@ import { useCalculator } from '../../composables/Calculator.js';
 import { usePatient } from '../../composables/Patient.js';
 import BSAHelper from './BSAHelper.js';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const patient = usePatient();
 const calculator = useCalculator();
+const calculation = useCalculation();
 
 const bsa = ref(0);
+
+onMounted(() => {
+    calculation.init({}, calculate);
+});
 
 function calculate(){
     calculator.startCalculator();
@@ -34,7 +40,7 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate @save-calculation-clicked="calculation.setCalculationValue(null)">
         <CalcRowPatientWeight />
         <CalcRowPatientSpecies />
         <CalcRowCalculateBtns :calculate="calculate" :reset="reset"/>

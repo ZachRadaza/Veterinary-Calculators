@@ -2,7 +2,7 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "
 import { db } from "../Firebase";
 import { USERS_COLLECTION } from "./UsersService";
 
-const PATIENT_COLLECTION = 'patients';
+export const PATIENT_COLLECTION = 'patients';
 
 const PatientService = {
     

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalculatorTabsTemplate from '../../components/CalculatorTabsTemplate.vue';
 import { SteroidConverterTabs } from './SteroidConverterTabs.js';
@@ -12,8 +12,11 @@ import DialogInfo from '../../components/dialogs/DialogInfo.vue';
 import SteroidConverterHelper from './SteroidConverterHelper.js';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import { roundToThousandth } from '../../utils/CalculatorUtils.js';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
+const calculationGluc = useCalculation();
+const calculationMine = useCalculation();
 
 const tabTemplate = ref(null);
 const dialogSameSteroid = ref(null);
@@ -32,8 +35,18 @@ const mineData = ref({
 const glucResult = ref(null);
 const mineResult = ref(null);
 
+onMounted(() => {
+
+});
+
 function calculateGluc(){
-    calculator.startCalculator();
+    const calculatorValues = {
+        glucData: glucData.value,
+        mineData: mineData.value,
+        currentTab: tabTemplate.value.getCurrentTab()
+    };
+
+    calculator.startCalculator(calculatorValues);
 
     if(glucData.value.dose <= 0)
         return;

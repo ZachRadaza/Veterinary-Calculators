@@ -17,7 +17,11 @@ const description = computed(() =>
 
 watch(patient.currentPatient, (pat) => {
     if(!patient.currentAndInputtedWeightEqual.value && pat !== null){
-        if(patient.inputtedPatient?.value?.weight === 0)
+        const noPopup = 
+            patient.inputtedPatient.value === undefined ||
+            patient.inputtedPatient?.value?.weight === 0;
+
+        if(noPopup)
             updateInputtedWeight();
         else
             dialog.value?.openDialog();
@@ -25,6 +29,9 @@ watch(patient.currentPatient, (pat) => {
 }, { deep: true });
 
 function updateInputtedWeight(){
+    if(patient.inputtedPatient?.value === undefined)
+        patient.resetInputtedPatient();
+
     patient.inputtedPatient.value.weight = patient.currentPatient?.value?.weight;
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
 import { BromideCompoundChoices } from './BromideCompoundChoices.js';
@@ -19,9 +19,11 @@ import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOption
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
 import CalcRowOr from '../../components/calculator-rows/CalcRowOr.vue';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const patient = usePatient();
 const calculator = useCalculator();
+const calculation = useCalculation();
 
 const selectedCompound = ref(BromideCompoundChoices.KBR);
 const sharedData = ref({
@@ -71,6 +73,14 @@ const showDosesPerDayError = computed(() =>
     calculator.showErrors.value && sharedData.numDoses?.value <= 0
 );
 
+onMounted(() => {
+    calculation.init({
+        selectedCompound,
+        sharedData,
+        kbrData,
+        naBrData
+    }, calculate);
+});
 
 watch(() =>  kbrData.value.takingRectally, (rectally) => {
     if(rectally){
@@ -144,7 +154,14 @@ function reset(){
 
 </script>
 <template>
-<CalculatorTemplate>
+<CalculatorTemplate 
+    @save-calculation-clicked="calculation.setCalculationValue({
+        selectedCompound,
+        sharedData,
+        kbrData,
+        naBrData
+    })"
+>
     <CalcRowPatientWeight />
 
     <CalcRow class="nabr-kbr-choice-row" label="Choice of Inorganic Chemical Compounds: ">

@@ -14,51 +14,61 @@ export const CalculatorTypes = Object.freeze({
     BSA: {
         name: 'Body Surface Area',
         route: '/bsa',
-        component: markRaw(BSACalculator)
+        component: markRaw(BSACalculator),
+        calculatorId: 1
     },
     BROMIDE: {
         name: 'Bromide Loading',
         route: '/bromide',
-        component: markRaw(BromideCalculator)
+        component: markRaw(BromideCalculator),
+        calculatorId: 2
     },
     CHOCTOX: {
         name: 'Chocolate Toxicity',
         route: '/choctox',
-        component: markRaw(ChocolateToxicityCalculator)
+        component: markRaw(ChocolateToxicityCalculator),
+        calculatorId: 3
     },
     FEEDTUBE: {
         name: 'Feeding Tube',
         route: '/feedtube',
-        component: markRaw(FeedTubeCalculator)
+        component: markRaw(FeedTubeCalculator),
+        calculatorId: 4
     },
     IRON: {
         name: 'Iron Salts',
         route: '/iron',
-        component: markRaw(IronSaltsCalculator)
+        component: markRaw(IronSaltsCalculator),
+        calculatorId: 5
     },
     NSAID: {
         name: 'NSAID Toxicity Calculator',
         route: '/nsaid',
-        component: markRaw(NSAIDToxicityCalculator)
+        component: markRaw(NSAIDToxicityCalculator),
+        calculatorId: 6
     },
     RODENTICIDE: {
         name: 'Rodenticide Toxicity',
         route: '/rodenticide',
-        component: markRaw(RodenticideToxicityCalculator)
+        component: markRaw(RodenticideToxicityCalculator),
+        calculatorId: 7
     }, 
     STEROID: {
         name: 'Steroid Converter',
         route: '/steroid',
-        component: markRaw(SteroidConverterCalculator)
+        component: markRaw(SteroidConverterCalculator),
+        calculatorId: 8
     },
     TRANSFUSION: {
         name: 'Transfusion Volume',
         route: '/transfusion',
-        component: markRaw(TransfusionVolumeCalculator)
+        component: markRaw(TransfusionVolumeCalculator),
+        calculatorId: 9
     },
     UNIT: {
         name: 'Unit Conversion',
         route: '/unit',
-        component: markRaw(UnitConversionCalculator)
+        component: markRaw(UnitConversionCalculator),
+        calculatorId: 10
     }
 });

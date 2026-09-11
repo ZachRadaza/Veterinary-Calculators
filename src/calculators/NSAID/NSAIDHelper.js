@@ -5,8 +5,6 @@ import { NSAIDToxicityType } from "./NSAIDToxicityType";
 const NSAIDHelper = {
 
     calculateNSAIDToxicity(drug, species, weightKg, totalMg){
-        console.log(drug, species, weightKg, totalMg);
-
         const doseMgKg = totalMg / weightKg;
         const thresholds = NSAIDDrugs[drug]?.[species];
 

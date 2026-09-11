@@ -70,6 +70,9 @@ export function usePatient(){
     }
 
     function validateInputtedPatient(){
+        // console.log('ran');
+        // console.log(inputtedPatient.value.weight)
+        // console.log(validInputtedPatientSpecies.value);
         return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
     }
 

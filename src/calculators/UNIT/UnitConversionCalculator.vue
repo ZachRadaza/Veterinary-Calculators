@@ -96,7 +96,12 @@ watch(() => bloodTestValues.value.category, () => {
 });
 
 function bloodCalculate(){
-    calculator.startCalculator();
+    const calculatorValues = {
+        bloodTestValues: bloodTestValues.value,
+        currentTab: UnitConversionTabs.TAB1
+    };
+
+    calculator.startCalculator(calculatorValues);
 
     if(bloodTestValues.value.bloodTest <= 0){
         bloodInvalidSelectDialog.value.openDialog();
@@ -154,7 +159,12 @@ function temperatureAmountCheck(){
 }
 
 function temperatureCalculate(){
-    calculator.startCalculator();
+    const calculatorValues = {
+        temperatureValues: temperatureValues.value,
+        currentTab: UnitConversionTabs.TAB2
+    }
+
+    calculator.startCalculator(calculatorValues);
     
     temperatureResults.value = TemperatureHelper.temparatureCalculateConversion(
         temperatureValues.value.amount,
@@ -175,16 +185,16 @@ function temperatureReset(){
 }
 // end of temperature -------------------------------------
 // Volume tab --------------------------------------------
-const volume = useUnitConversionGeneral(VolumeConversionUnits);
+const volume = useUnitConversionGeneral(VolumeConversionUnits, UnitConversionTabs.TAB3);
 
 // Weight Tab -----------------------------------------
-const weight = useUnitConversionGeneral(WeightConversionUnits);
+const weight = useUnitConversionGeneral(WeightConversionUnits, UnitConversionTabs.TAB4);
 
 // time tab ----------------------------------------
-const time = useUnitConversionGeneral(TimeConversionUnits);
+const time = useUnitConversionGeneral(TimeConversionUnits, UnitConversionTabs.TAB5);
 
 // Length tab --------------------------------------
-const length = useUnitConversionGeneral(LengthConversionUnits);
+const length = useUnitConversionGeneral(LengthConversionUnits, UnitConversionTabs.TAB6);
 
 </script>
 <template>
