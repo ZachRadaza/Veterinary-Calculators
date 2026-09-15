@@ -2,10 +2,9 @@
 import { ref } from 'vue';
 import LabeledInput from '../components/LabeledInput.vue';
 import { useUser } from '../composables/User.js';
-import { useRouter } from 'vue-router';
+import router from '../router/index.js';
 
 const user = useUser();
-const router = useRouter();
 
 const email = ref('');
 const username = ref('');

@@ -8,6 +8,7 @@ import AccountPage from "../pages/AccountPage.vue";
 import SignUpPage from "../pages/SignUpPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import { useUser } from "../composables/User.js";
+import { usePatient } from "../composables/Patient.js";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -62,11 +63,13 @@ router.beforeEach((to) => {
 
 router.afterEach((to) => {
     const calculator = useCalculator();
+    const patient = usePatient();
     const calcType = to.meta.calcType;
+
+    patient.setCurrentPatientId(to.query?.patientId);
 
     if(calcType)
         calculator.setCurrentCalculatorType(calcType);
-
 
 });
 

@@ -7,9 +7,9 @@ export function useInvalidInputDialog(isInvalidComp, label){
     const isInvalid = computed(() => isInvalidComp.value);
     const dialogLabel = computed(() => `Please enter ${getDialogLabel(label)}.`)
 
-    function init(){
-        const calculator = useCalculator();
-        
+    const calculator = useCalculator();
+
+    function init(){        
         watch(calculator.calculatorCalculating, (calcing) => {
             if(calcing && isInvalid.value){
                 dialogRef.value?.openDialog();

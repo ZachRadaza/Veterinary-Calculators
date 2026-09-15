@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalculatorTabsTemplate from '../../components/CalculatorTabsTemplate.vue';
 import { SteroidConverterTabs } from './SteroidConverterTabs.js';
@@ -15,8 +15,8 @@ import { roundToThousandth } from '../../utils/CalculatorUtils.js';
 import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
-const calculationGluc = useCalculation();
-const calculationMine = useCalculation();
+const calculation = useCalculation();
+const patient = usePatient()
 
 const tabTemplate = ref(null);
 const dialogSameSteroid = ref(null);
@@ -36,18 +36,25 @@ const glucResult = ref(null);
 const mineResult = ref(null);
 
 onMounted(() => {
-
+    calculation.init({
+        glucData,
+        mineData,
+        currentTab: tabTemplate.value.getCurrentTabRef()
+    }, calculate);
 });
 
+function calculate(){
+    calculator.startCalculator();
+
+    if(tabTemplate.value.currentTab === SteroidConverterTabs.TAB1)
+        calculateGluc();
+    else
+        calculateMine
+
+    calculator.endCalculator();
+}
+
 function calculateGluc(){
-    const calculatorValues = {
-        glucData: glucData.value,
-        mineData: mineData.value,
-        currentTab: tabTemplate.value.getCurrentTab()
-    };
-
-    calculator.startCalculator(calculatorValues);
-
     if(glucData.value.dose <= 0)
         return;
 
@@ -62,13 +69,9 @@ function calculateGluc(){
         glucData.value.steroidTo,
         Number(glucData.value.dose)
     );
-
-    calculator.endCalculator();
 }
 
 function calculateMine(){
-    calculator.startCalculator();
-
     if(mineData.value.dose <= 0)
         return;
 
@@ -83,12 +86,11 @@ function calculateMine(){
         mineData.value.steroidTo,
         Number(mineData.value.dose)
     );
-
-    calculator.endCalculator();
 }
 
 function resetGluc(){
     calculator.resetCalculator();
+    patient.resetInputtedPatient();
 
     glucData.value = {
         steroidFrom: Object.keys(SteroidDrugs)[0],
@@ -99,6 +101,7 @@ function resetGluc(){
 
 function resetMine(){
     calculator.resetCalculator();
+    patient.resetInputtedPatient();
 
     mineData.value = {
         steroidFrom: Object.keys(SteroidDrugs)[0],
@@ -112,6 +115,11 @@ function resetMine(){
 <CalculatorTabsTemplate 
     ref="tabTemplate"
     :tab-names="Object.values(SteroidConverterTabs)"
+    @save-calculation-clicked="calculation.setCalculationValue({
+        glucData,
+        mineData,
+        currentTab: tabTemplate?.getCurrentTab()
+    })"
 >
 
     <!-- Glucocococ -->

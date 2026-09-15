@@ -74,7 +74,7 @@ function reset(){
 </script>
 <template>
     <CalculatorTemplate
-        @save-calculation-clicked="calculation.setSavedCalculation({
+        @save-calculation-clicked="calculation.setCalculationValue({
             rodenticideType,
             quantityBait,
             ingestion

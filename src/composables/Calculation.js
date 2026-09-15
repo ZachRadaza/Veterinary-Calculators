@@ -14,6 +14,10 @@ const calculationValues = computed(() => _calculationValues.value);
 
 export function useCalculation(){
 
+    const user = useUser();
+    const calculator = useCalculator();
+    const patient = usePatient();
+
     function init(calcRefs = {}, calculate){
         watch(savedCalculation, (savedCalc) => {
             if(!savedCalc)
@@ -35,8 +39,6 @@ export function useCalculation(){
     }
 
     function setCalculationValue(calcValues){
-        const patient = usePatient();
-
         const completeCalcValues = {
             patient: patient.inputtedPatient.value,
             ...calcValues
@@ -47,8 +49,6 @@ export function useCalculation(){
 
     async function loadAllPatientSavedCalculations(patientId){
         try{
-            const user = useUser();
-
             _calculations.value = await CalculationService.getCalculations(
                 user.userId.value, 
                 patientId,
@@ -60,8 +60,6 @@ export function useCalculation(){
 
     async function loadPatientSavedCalculations(patientId, calculatorId){
         try{
-            const user = useUser();
-
             _calculations.value = await CalculationService.getCalculatorCalculations(
                 user.userId.value,
                 patientId,
@@ -73,9 +71,7 @@ export function useCalculation(){
     }
 
     async function loadSavedCalculation(patientId, calculationId){
-        try{
-            const user = useUser();
-            
+        try{            
             if(!user.userId.value || !calculationId && calculationId !== -1)
                 return;
 
@@ -99,9 +95,6 @@ export function useCalculation(){
 
     async function saveCalculation(patientId, title, comments, calcTypeId){
         try{
-            const user = useUser();
-            const calculator = useCalculator();
-
             const newCalculation = await CalculationService.addCalculation(
                 user.userId.value,
                 patientId,

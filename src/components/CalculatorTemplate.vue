@@ -5,12 +5,11 @@ import PatientChooser from './PatientChooser.vue';
 import { usePatient } from '../composables/Patient.js';
 import DialogSaveCalculation from './dialogs/DialogSaveCalculation.vue';
 import { useCalculation } from '../composables/Calculation.js';
-import { useRouter } from 'vue-router';
+import router from '../router/index.js';
 
 const calculator = useCalculator();
 const patient = usePatient();
 const calculation = useCalculation();
-const router = useRouter();
 
 const dialogSaveCalculation = ref(null);
 
@@ -19,13 +18,6 @@ const emit = defineEmits(['save-calculation-clicked']);
 onMounted(async () => {
     calculator.resetCalculator();
     patient.resetInputtedPatient();
-
-    const calcId = calculator.currentCalcType?.value?.calculatorId;
-    if(calcId)
-        await calculation.loadPatientSavedCalculations(
-            patient.currentPatientId.value, 
-            calcId
-        );
 });
 
 function handleSaveCalculation(){

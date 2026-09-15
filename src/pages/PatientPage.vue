@@ -24,7 +24,7 @@ watch(patient.currentPatientId, async (patId) => {
 });
 
 function handleAddPatient(){
-    patient.setCurrentPatientId(-1);
+    patient.changeCurrentPatientId(-1);
     isPatientEditing.value = false;
     dialogModifyPatient.value.openDialog();
 }
@@ -55,7 +55,7 @@ async function handleDeletePatient(){
                             <button v-for="pat in patient.patientsList.value" 
                                 :key="pat.id"
                                 :class="`list-btn secondary ${pat.id === patient.currentPatientId.value ? 'selected' : ''}`"
-                                @click="patient.setCurrentPatientId(pat.id)"
+                                @click="patient.changeCurrentPatientId(pat.id)"
                             >
                                 {{ pat?.name }}
                             </button>
@@ -80,7 +80,7 @@ async function handleDeletePatient(){
                         >
                             Remove Patient
                         </button>
-                        <button @click="patient.setCurrentPatientId(-1)">Clear Section</button>
+                        <button @click="patient.changeCurrentPatientId(-1)">Clear Section</button>
                     </div>
                 </div>
                 <div class="calculations-area content-area">

@@ -2,45 +2,57 @@
 import { computed, watch } from 'vue';
 import { useCalculator } from '../composables/Calculator';
 import Header from '../components/Header.vue';
-import { useRoute, useRouter } from 'vue-router';
 import { usePatient } from '../composables/Patient.js';
 import { useCalculation } from '../composables/Calculation.js';
+import router from '../router/index.js';
+import { useUser } from '../composables/User.js';
 
 const calculator = useCalculator();
-const route = useRoute();
-const router = useRouter();
 const patient = usePatient();
 const calculation = useCalculation();
+const user = useUser();
 
 const calcTypeComponent = computed(() => 
     calculator.currentCalcType.value?.component
 );
 
-watch(patient.currentPatientId, async (patId) => {
-    const calcId = calculator.currentCalcType?.value?.calculatorId;
+watch(
+    [
+        () => router.currentRoute.value.query.calculationId,
+        () => router.currentRoute.value.query.patientId,
+        user.userId
+    ],
+    async ([calculationId, patientId, userId]) => {
+        if(!userId || !calculationId)
+            return;
 
-    if(calcId)
-        await calculation.loadPatientSavedCalculations(
-            patId, 
-            calcId
-        );
-
-    router.push({query: { patientId: patId }})
-});
-
-watch(() => route.query, async (query) => {
-    if(query?.patientId !== patient.currentPatientId.value)
-        patient.setCurrentPatientId(query?.patientId);
-
-    if(query?.calculationId){
         const savedCalc = await calculation.loadSavedCalculation(
-            patient.currentPatientId.value, 
-            query.calculationId
+            patientId,
+            calculationId
         );
 
-        patient.inputtedPatient.value = savedCalc?.patient;
-    }
-}, { immediate: true, deep: true });
+        patient.inputtedPatient.value = savedCalc?.patient ?? null;
+    },
+    { immediate: true }
+);
+
+watch(
+    [
+        () => router.currentRoute.value.query.patientId,
+        () => calculator.currentCalcType.value?.calculatorId,
+        user.userId
+    ],
+    async ([patientId, calculatorId, userId]) => {
+        if(!userId || !patientId || !calculatorId)
+            return;
+
+        await calculation.loadPatientSavedCalculations(
+            patientId,
+            calculatorId
+        );
+    },
+    { immediate: true }
+);
 
 </script>
 <template>

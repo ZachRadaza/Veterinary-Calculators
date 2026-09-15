@@ -51,7 +51,7 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate @save-calculation-clicked="calculation.setSavedCalculation({
+    <CalculatorTemplate @save-calculation-clicked="calculation.setCalculationValue({
         ironSalt,
         amountMg
     })">
