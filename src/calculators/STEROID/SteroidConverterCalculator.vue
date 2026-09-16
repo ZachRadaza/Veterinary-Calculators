@@ -46,10 +46,10 @@ onMounted(() => {
 function calculate(){
     calculator.startCalculator();
 
-    if(tabTemplate.value.currentTab === SteroidConverterTabs.TAB1)
+    if(tabTemplate.value.getCurrentTab() === SteroidConverterTabs.TAB1)
         calculateGluc();
     else
-        calculateMine
+        calculateMine();
 
     calculator.endCalculator();
 }
@@ -147,7 +147,7 @@ function resetMine(){
             :options="Object.keys(SteroidDrugs)"
         />
 
-        <CalcRowCalculateBtns :calculate="calculateGluc" :reset="resetGluc"/>
+        <CalcRowCalculateBtns :calculate="calculate" :reset="resetGluc"/>
     </template>
 
     <template #[`result-${SteroidConverterTabs.TAB1}`]>
@@ -195,7 +195,7 @@ function resetMine(){
             :options="Object.keys(SteroidDrugs)"
         />
 
-        <CalcRowCalculateBtns :calculate="calculateMine" :reset="resetMine"/>
+        <CalcRowCalculateBtns :calculate="calculate" :reset="resetMine"/>
     </template>
 
     <template #[`result-${SteroidConverterTabs.TAB2}`]>
