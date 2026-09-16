@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
 import { IronSaltTypes } from './IronSaltTypes.js';
@@ -8,8 +8,10 @@ import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalcul
 import CalcRowInputLabel from '../../components/calculator-rows/CalcRowInputLabel.vue';
 import IronSaltHelper from './IronSaltsHelper.js';
 import { roundToThousandth } from '../../utils/CalculatorUtils.js';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
+const calculation = useCalculation();
 
 const ironSalt = ref(0);
 const amountMg = ref(0);
@@ -21,6 +23,13 @@ const showIronSaltError = computed(() =>
 const showAmountMgError = computed(() => 
     amountMg.value === 0 && calculator.showErrors.value
 );
+
+onMounted(() => {
+    calculation.init({
+        ironSalt,
+        amountMg,
+    }, calculate);
+});
 
 function calculate(){
     calculator.startCalculator();
@@ -42,7 +51,10 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate @save-calculation-clicked="calculation.setCalculationValue({
+        ironSalt,
+        amountMg
+    })">
         <CalcRowSelect 
             label="Iron Salt: "
             v-model="ironSalt"

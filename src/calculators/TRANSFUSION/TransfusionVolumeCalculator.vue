@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CalcRowInput from '../../components/calculator-rows/CalcRowInput.vue';
 import CalcRowPatientSpecies from '../../components/calculator-rows/CalcRowPatientSpecies.vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
@@ -10,9 +10,11 @@ import { usePatient } from '../../composables/Patient.js';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
 import TransfusionHelper from './TransfusionHelper.js';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
 const patient = usePatient();
+const calculation = useCalculation();
 
 const HCTValues = ref({
     HCTa: 0,
@@ -20,6 +22,10 @@ const HCTValues = ref({
     HCTd: 0
 });
 const result = ref(null);
+
+onMounted(() => {
+    calculation.init({ HCTValues }, calculate);
+});
 
 function calculate(){
     calculator.startCalculator();
@@ -57,7 +63,11 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate 
+        @save-calculation-clicked="calculation.setCalculationValue({
+            HCTValues
+        })"
+    >
         <CalcRowPatientSpecies 
             :only-dog-cat="true"
         />

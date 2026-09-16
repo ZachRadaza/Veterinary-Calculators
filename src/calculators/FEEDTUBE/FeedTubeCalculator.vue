@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalcRowSelect from '../../components/calculator-rows/CalcRowSelect.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
@@ -15,9 +15,11 @@ import InputLabel from '../../components/InputLabel.vue';
 import CalcRow from '../../components/calculator-rows/CalcRow.vue';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
 import FeedTubeHelper from './FeedTubeHelper.js';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
 const patient = usePatient();
+const calculation = useCalculation();
 
 const daysUntil100 = ref(Days100[0]);
 const numFeedings = ref(NumFeedings[0]);
@@ -53,6 +55,18 @@ const showErrorDensityPerCan = computed(() =>
     calculator.showErrors.value && 
     !densityDirectly.value
 );
+
+onMounted(() => {
+    calculation.init({
+        daysUntil100,
+        numFeedings,
+        recoveryDiet,
+        isDiluting,
+        densityDirectly,
+        densityValues,
+        dilutingVolumes,
+    }, calculate);
+})
 
 watch(() => isDiluting.value, (diluting) => {
     resetDilutingVolumes();
@@ -150,7 +164,17 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate
+        @save-calculation-clicked="calculation.setCalculationValue({
+            daysUntil100,
+            numFeedings,
+            recoveryDiet,
+            isDiluting,
+            densityDirectly,
+            densityValues,
+            dilutingVolumes,
+        })"
+    >
         <CalcRowPatientWeight />
         
         <CalcRowSelect 

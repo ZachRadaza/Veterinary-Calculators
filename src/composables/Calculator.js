@@ -1,23 +1,19 @@
 import { computed, ref } from "vue";
 import { CalculatorTypes } from "../calculators/CaclulatorTypes";
-import { usePatient } from "./Patient";
 
 const _currentCalcType = ref(null);
 
-const currentCalcType = computed(() => _currentCalcType.value);
 const showResults = ref(false);
 const inputValues = ref('');
 const showErrors = ref(false);
 const calculatorCalculating = ref(false);
 
+const currentCalcType = computed(() => _currentCalcType.value);
+
 export function useCalculator(){
 
     function setCurrentCalculatorType(type){
         _currentCalcType.value = type;
-    }
-
-    function saveCalculation(){
-        const patient = usePatient();
     }
 
     function resetCalculator(){
@@ -39,7 +35,7 @@ export function useCalculator(){
 
     return { 
         currentCalcType, showResults, inputValues, showErrors, calculatorCalculating,
-        setCurrentCalculatorType, saveCalculation, 
+        setCurrentCalculatorType,
         resetCalculator, startCalculator, endCalculator
     };
 }

@@ -12,8 +12,8 @@ const currentPatient = computed(() => patient.currentPatient?.value ?? null);
 const currentPatientAge = computed(() => getAge(currentPatient.value?.dateOfBirth));
 
 watch(() => selectedPatientId.value, (newlySelectedId) => {
-    patient.setCurrentPatientId(newlySelectedId);
-    patientInput.value = currentPatient.value?.name || '';
+    patient.changeCurrentPatientId(newlySelectedId);
+    patientInput.value = patient.getPatient(newlySelectedId)?.name ?? '';
 }, { immediate: true });
 
 watch(() => patient.currentPatientId.value, (patientId) => {
@@ -47,7 +47,7 @@ function handleSearch(){
 
     scoredNames.sort((a, b) => b.score - a.score);
 
-    patient.setCurrentPatientId(scoredNames[0].id ?? -1);
+    patient.changeCurrentPatientId(scoredNames[0].id ?? -1);
 }
 
 function getFuzzyScore(name, query){

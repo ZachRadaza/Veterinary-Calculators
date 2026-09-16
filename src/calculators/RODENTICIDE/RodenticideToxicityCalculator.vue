@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CalcRowPatientSpecies from '../../components/calculator-rows/CalcRowPatientSpecies.vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalcRowRadios from '../../components/calculator-rows/CalcRowRadios.vue';
@@ -13,9 +13,11 @@ import { usePatient } from '../../composables/Patient.js';
 import CalcRowCalculateBtns from '../../components/calculator-rows/CalcRowCalculateBtns.vue';
 import { lbsToKg, roundToThousandth } from '../../utils/CalculatorUtils.js';
 import RodenticideHelper from './RodenticideHelper.js';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
 const patient = usePatient();
+const calculation = useCalculation();
 
 const rodenticideType = ref(Object.keys(RodenticideTypes)[0]);
 const quantityBait = ref({
@@ -25,6 +27,14 @@ const quantityBait = ref({
 const ingestion = ref(RodenticideTimeIngestion.LESS);
 
 const result = ref(null);
+
+onMounted(() => {
+    calculation.init({
+        rodenticideType,
+        quantityBait,
+        ingestion
+    }, calculate);
+})
 
 function calculate(){
     calculator.startCalculator();
@@ -63,7 +73,13 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate
+        @save-calculation-clicked="calculation.setCalculationValue({
+            rodenticideType,
+            quantityBait,
+            ingestion
+        })" 
+    >
 
         <CalcRowPatientSpecies :only-dog-cat="true"/>
 

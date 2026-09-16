@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, ref } from "vue";
 import UsersService from "../services/UsersService";
 
 const user = ref(null);

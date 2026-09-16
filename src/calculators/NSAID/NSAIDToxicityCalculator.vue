@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import CalcRowPatientWeight from '../../components/calculator-rows/CalcRowPatientWeight.vue';
 import CalcRowTwoOptions from '../../components/calculator-rows/CalcRowTwoOptions.vue';
 import CalculatorTemplate from '../../components/CalculatorTemplate.vue';
@@ -15,8 +15,10 @@ import NSAIDHelper from './NSAIDHelper.js';
 import { lbsToKg } from '../../utils/CalculatorUtils.js';
 import { PatientSpecies } from '../../utils/PatientSpecies.js';
 import DialogInfo from '../../components/dialogs/DialogInfo.vue';
+import { useCalculation } from '../../composables/Calculation.js';
 
 const calculator = useCalculator();
+const calculation = useCalculation();
 const patient = usePatient();
 
 const amount = ref({
@@ -33,6 +35,13 @@ const resultHeader = ref('');
 const currentDrugInfo = ref(null);
 
 const dialogDesc = computed(() => `Sorry, no data for the effects of ${drug.value} on ${patient.inputtedPatient.value?.species} is available.`);
+
+onMounted(() => {
+    calculation.init({
+        amount,
+        drug
+    }, calculate);
+});
 
 function resultThresholdAmount(amountMgKg){
     if(!amountMgKg)
@@ -109,7 +118,12 @@ function reset(){
 
 </script>
 <template>
-    <CalculatorTemplate>
+    <CalculatorTemplate
+        @save-calculation-clicked="calculation.setCalculationValue({
+            amount,
+            drug,
+        })"
+    >
         <CalcRowPatientSpecies :only-dog-cat="true"/>
 
         <CalcRowPatientWeight/>

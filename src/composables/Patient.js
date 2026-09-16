@@ -2,6 +2,7 @@ import { computed, ref, watch } from "vue";
 import PatientService from "../services/PatientService";
 import { PatientSpecies } from "../utils/PatientSpecies";
 import { useUser } from "./User";
+import router from "../router";
 
 const _currentPatientId = ref(0);
 const _patients = ref(new Map());
@@ -18,10 +19,15 @@ const validInputtedPatientWeight = computed(() => inputtedPatient?.value?.weight
 const validInputtedPatientSpecies = computed(() => Object.values(PatientSpecies).includes(inputtedPatient?.value?.species));
 const currentAndInputtedWeightEqual = computed(() => currentPatient.value?.weight === inputtedPatient.value?.weight);
 
+const getPatient = (id) => {
+    return _patients.value.get(id) ?? null;
+}
+
 export function usePatient(){
     
+    const user = useUser();
+
     async function init(){
-        const user = useUser();
 
         watch(user.userId, async (userId) => {
             await loadListOfPatients(userId);
@@ -43,7 +49,17 @@ export function usePatient(){
         }
     }
 
+    function changeCurrentPatientId(patientId){
+        if(patientId === _currentPatientId.value)
+            return;
+
+        router.push({ query: { ...router.currentRoute.value.query, patientId }});
+    }
+
     function setCurrentPatientId(patientId){
+        if(patientId === _currentPatientId.value)
+            return;
+
         _currentPatientId.value = patientId;
 
         //inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
@@ -66,7 +82,7 @@ export function usePatient(){
                 dob: "2004-07-07",
                 createdAt: "",
             };
-
+        router.push({ query: { patientId: currentPatientId.value }});
     }
 
     function validateInputtedPatient(){
@@ -75,7 +91,6 @@ export function usePatient(){
 
     async function addPatient(patient){
         try{
-            const user = useUser();
             const addedPatient =  await PatientService.addPatient(
                 user.userId.value,
                 patient.name,
@@ -102,8 +117,6 @@ export function usePatient(){
 
     async function editPatient(patient){
         try{
-            const user = useUser();
-
             const editedPatient =  await PatientService.updatePatient(user.userId.value, patient.id, patient);
             
             _patients.value.set(editedPatient.id, editedPatient);
@@ -115,8 +128,6 @@ export function usePatient(){
 
     async function deletePatient(patientId){
         try{
-            const user = useUser();
-
             await PatientService.deletePatient(user.userId.value, patientId);
 
             _patients.value.delete(patientId);
@@ -128,7 +139,7 @@ export function usePatient(){
     return {
         currentPatient, currentPatientId, patients, inputtedPatient, patientsList, 
         validInputtedPatientSpecies, validInputtedPatientWeight, currentAndInputtedWeightEqual,
-        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient,
-        addPatient, editPatient, deletePatient
+        loadListOfPatients, init, setCurrentPatientId, resetInputtedPatient, validateInputtedPatient, changeCurrentPatientId,
+        addPatient, editPatient, deletePatient, getPatient
     }
 }

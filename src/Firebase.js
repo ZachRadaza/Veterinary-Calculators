@@ -18,7 +18,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 export const auth = getAuth(firebaseApp); 
 export const db = initializeFirestore(firebaseApp, {
-    experimentalAutoDetectLongPolling: true,
+    experimentalForceLongPolling: true,
     localCache: memoryLocalCache()
 });
 export const storage = getStorage(firebaseApp);

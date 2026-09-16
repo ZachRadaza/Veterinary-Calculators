@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import CalculatorTabsTemplate from '../../components/CalculatorTabsTemplate.vue';
 import { UnitConversionTabs } from './UnitConversionTabs.js';
 import { useCalculator } from '../../composables/Calculator.js';
@@ -22,23 +22,15 @@ import UnitConversionTabResult from './UnitConversionTabResult.vue';
 import { TimeConversionUnits } from './time/TimeConversionUnits.js';
 import LengthConversionUnits from './length/LengthConversionUnits.js';
 import { useUnitConversionGeneral } from './UnitConversionGeneral.js';
+import { useCalculation } from '../../composables/Calculation.js';
+import { usePatient } from '../../composables/Patient.js';
 
 const tabTemplate = ref(null);
 const sameUnitDialog = ref(null);
+
 const calculator = useCalculator();
-
-function inputCheck(input){
-    if(input === '-')
-        return input;
-
-    if(input === '0-')
-        return '-0';
-
-    if(isNaN(Number(input)))
-        return 0;
-
-    return input;
-}
+const calculation = useCalculation();
+const patient = usePatient();
 
 // Blood Tab --------------------------------------------------
 const bloodTestValues = ref({
@@ -117,6 +109,7 @@ function bloodCalculate(){
 
 function bloodReset(){
     calculator.resetCalculator();
+    patient.resetInputtedPatient();
 
     bloodTestValues.value = {
         category: Object.keys(BloodTestCategories)[0],
@@ -166,6 +159,7 @@ function temperatureCalculate(){
 
 function temperatureReset(){
     calculator.resetCalculator();
+    patient.resetInputtedPatient();
 
     temperatureValues.value = {
         conversionTo: TemperatureConversionUnits.CELSIUS,
@@ -175,22 +169,79 @@ function temperatureReset(){
 }
 // end of temperature -------------------------------------
 // Volume tab --------------------------------------------
-const volume = useUnitConversionGeneral(VolumeConversionUnits);
+const volume = useUnitConversionGeneral(VolumeConversionUnits, UnitConversionTabs.TAB3);
 
 // Weight Tab -----------------------------------------
-const weight = useUnitConversionGeneral(WeightConversionUnits);
+const weight = useUnitConversionGeneral(WeightConversionUnits, UnitConversionTabs.TAB4);
 
 // time tab ----------------------------------------
-const time = useUnitConversionGeneral(TimeConversionUnits);
+const time = useUnitConversionGeneral(TimeConversionUnits, UnitConversionTabs.TAB5);
 
 // Length tab --------------------------------------
-const length = useUnitConversionGeneral(LengthConversionUnits);
+const length = useUnitConversionGeneral(LengthConversionUnits, UnitConversionTabs.TAB6);
 
+// glocabl uses
+function inputCheck(input){
+    if(input === '-')
+        return input;
+
+    if(input === '0-')
+        return '-0';
+
+    if(isNaN(Number(input)))
+        return 0;
+
+    return input;
+}
+
+function calculate(){
+    switch(tabTemplate.value?.getCurrentTab()){
+        case UnitConversionTabs.TAB1:
+            bloodCalculate();
+            break;
+        case UnitConversionTabs.TAB2:
+            temperatureCalculate();
+            break;
+        case UnitConversionTabs.TAB3:
+            volume.calculate();
+            break;
+        case UnitConversionTabs.TAB4:
+            weight.calculate();
+            break;
+        case UnitConversionTabs.TAB5:
+            time.calculate();
+            break;
+        case UnitConversionTabs.TAB6:
+            length.calculate();
+            break;
+    }
+}
+
+onMounted(() => {
+    calculation.init({
+        bloodTestValues,
+        temperatureValues,
+        volumeValues: volume.values,
+        weightValues: weight.values,
+        tineValues: time.values,
+        lengthValues: length.values,
+        currentTab: tabTemplate.value?.getCurrentTabRef()
+    }, calculate);
+});
 </script>
 <template>
     <CalculatorTabsTemplate
         :tab-names="Object.values(UnitConversionTabs)"
         ref="tabTemplate"
+        @save-calculation-clicked="calculation.setCalculationValue({
+            bloodTestValues,
+            temperatureValues,
+            volumeValues: volume.values,
+            weightValues: weight.values,
+            tineValues: time.values,
+            lengthValues: length.values,
+            currentTab: tabTemplate?.getCurrentTab()
+        })"
     >
         <!-- Blood -->
         <template #[UnitConversionTabs.TAB1]>
@@ -281,9 +332,9 @@ const length = useUnitConversionGeneral(LengthConversionUnits);
         <!-- Volume -->
         <template #[UnitConversionTabs.TAB3]>
             <UnitConversionTabContent 
-                v-model:amount="volume.amount.value"
-                v-model:unit-from="volume.unitFrom.value"
-                v-model:unit-to="volume.unitTo.value"
+                v-model:amount="volume.values.value.amount"
+                v-model:unit-from="volume.values.value.unitFrom"
+                v-model:unit-to="volume.values.value.unitTo"
                 :units="VolumeConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB3)"
                 @calculate="volume.calculate"
@@ -300,9 +351,9 @@ const length = useUnitConversionGeneral(LengthConversionUnits);
         <!-- Wegiht -->
         <template #[UnitConversionTabs.TAB4]>
             <UnitConversionTabContent 
-                v-model:amount="weight.amount.value"
-                v-model:unit-from="weight.unitFrom.value"
-                v-model:unit-to="weight.unitTo.value"
+                v-model:amount="weight.values.value.amount"
+                v-model:unit-from="weight.values.value.unitFrom"
+                v-model:unit-to="weight.values.value.unitTo"
                 :units="WeightConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB4)"
                 @calculate="weight.calculate"
@@ -319,9 +370,9 @@ const length = useUnitConversionGeneral(LengthConversionUnits);
         <!-- Time -->
         <template #[UnitConversionTabs.TAB5]>
             <UnitConversionTabContent 
-                v-model:amount="time.amount.value"
-                v-model:unit-from="time.unitFrom.value"
-                v-model:unit-to="time.unitTo.value"
+                v-model:amount="time.values.value.amount"
+                v-model:unit-from="time.values.value.unitFrom"
+                v-model:unit-to="time.values.value.unitTo"
                 :units="TimeConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB5)"
                 @calculate="time.calculate"
@@ -338,9 +389,9 @@ const length = useUnitConversionGeneral(LengthConversionUnits);
         <!-- Length -->
         <template #[UnitConversionTabs.TAB6]>
             <UnitConversionTabContent 
-                v-model:amount="length.amount.value"
-                v-model:unit-from="length.unitFrom.value"
-                v-model:unit-to="length.unitTo.value"
+                v-model:amount="length.values.value.amount"
+                v-model:unit-from="length.values.value.unitFrom"
+                v-model:unit-to="length.values.value.unitTo"
                 :units="LengthConversionUnits"
                 :show-tab-errors="tabTemplate?.showErrors(UnitConversionTabs.TAB6)"
                 @calculate="length.calculate"

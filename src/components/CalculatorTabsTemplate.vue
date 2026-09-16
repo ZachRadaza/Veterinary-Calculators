@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import CalculatorTemplate from './CalculatorTemplate.vue';
-import { useRoute, useRouter } from 'vue-router';
 import { useCalculator } from '../composables/Calculator.js';
+import router from '../router/index.js';
 
 const { tabNames } = defineProps({
     tabNames: {
@@ -12,35 +12,48 @@ const { tabNames } = defineProps({
     }
 });
 
-const router = useRouter();
-const route = useRoute();
+const emit = defineEmits(['save-calculation-clicked']);
 
 const calculator = useCalculator();
 const currentTab = ref(null);
 
 onMounted(() => {
-    const hashTab = route.hash.replace('#', '');
+    const hashTab = router.currentRoute.value.hash.replace('#', '');
+    let tabExists = false;
+
     for(const tab of tabNames){
         if(tab === hashTab){
             handleTabClick(tab);
+            tabExists = true;
             return;
         }
     }
 
-    handleTabClick(tabNames[0]);
+    if(!tabExists)
+        handleTabClick(tabNames[0]);
 });
 
 function handleTabClick(tab){
     if(tab === currentTab.value)
         return;
 
+    const currentRoute = router.currentRoute.value;
+    router.push({
+        path: currentRoute.path,
+        query: currentRoute.query,
+        hash: `#${tab}`
+    });
+
     currentTab.value = tab;
-    router.push({ hash: `#${tab}` });
     calculator.showResults.value = false;   
 }
 
 function getCurrentTab(){
     return currentTab.value;
+}
+
+function getCurrentTabRef(){
+    return currentTab;
 }
 
 function showErrors(tab){
@@ -49,11 +62,12 @@ function showErrors(tab){
 
 defineExpose({
     getCurrentTab,
+    getCurrentTabRef,
     showErrors
 });
 </script>
 <template>
-<CalculatorTemplate>
+<CalculatorTemplate @save-calculation-clicked="emit('save-calculation-clicked')">
     <div class="flex-row tab-btns">
         <button 
             v-for="tab in tabNames" 

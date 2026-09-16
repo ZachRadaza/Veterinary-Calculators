@@ -1,12 +1,14 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
 import { usePatient } from '../composables/Patient.js';
 import DialogModifyPatient from '../components/dialogs/DialogModifyPatient.vue';
 import DialogBoolean from '../components/dialogs/DialogBoolean.vue';
+import { useCalculation } from '../composables/Calculation.js';
 
 const patient = usePatient();
+const calculation = useCalculation();
 
 // patients values
 const disablePatientModifyBtns = computed(() => patient.currentPatientId.value === -1);
@@ -14,8 +16,15 @@ const dialogModifyPatient = ref(null);
 const isPatientEditing = ref(false);
 const dialogDeletePatientConfirm = ref(false);
 
+//calculation values
+const selectedCalculationId = ref(-1);
+
+watch(patient.currentPatientId, async (patId) => {
+    await calculation.loadAllPatientSavedCalculations(patId);
+});
+
 function handleAddPatient(){
-    patient.setCurrentPatientId(-1);
+    patient.changeCurrentPatientId(-1);
     isPatientEditing.value = false;
     dialogModifyPatient.value.openDialog();
 }
@@ -38,15 +47,24 @@ async function handleDeletePatient(){
                 <div class="patients-area content-area">
                     <h4 class="header-title">Patients</h4>
                     <div class="patients-cont">
-                        <div class="patients-list">
+
+                        <div 
+                            class="patients-list" 
+                            v-if="patient.patientsList.value.length > 0"
+                        >
                             <button v-for="pat in patient.patientsList.value" 
                                 :key="pat.id"
-                                :class="`patient-btn secondary ${pat.id === patient.currentPatientId.value ? 'selected' : ''}`"
-                                @click="patient.setCurrentPatientId(pat.id)"
+                                :class="`list-btn secondary ${pat.id === patient.currentPatientId.value ? 'selected' : ''}`"
+                                @click="patient.changeCurrentPatientId(pat.id)"
                             >
                                 {{ pat?.name }}
                             </button>
                         </div>
+
+                        <div class="patients-list-empty" v-else>
+                            <h5>No Saved Patients</h5>
+                        </div>
+
                     </div>
                     <div class="buttons-cont">
                         <button @click="handleAddPatient">Add Patient</button>
@@ -62,14 +80,30 @@ async function handleDeletePatient(){
                         >
                             Remove Patient
                         </button>
-                        <button @click="patient.setCurrentPatientId(-1)">Clear Section</button>
+                        <button @click="patient.changeCurrentPatientId(-1)">Clear Section</button>
                     </div>
                 </div>
                 <div class="calculations-area content-area">
                     <h4 class="header-title">Calculations</h4>
-                    <table class="calculations-table">
+                    <div class="calculations-cont">
 
-                    </table>
+                        <div 
+                            class="calculations-list" 
+                            v-if="calculation.calculations?.value?.length > 0"
+                        >
+                            <button 
+                                v-for="savedCalc in calculation.calculations.value"
+                                :class="`list-btn secondary ${savedCalc.id === selectedCalculationId ? 'selected' : ''}`"
+                                @click="selectedCalculationId = savedCalc.id"
+                            >
+                                {{ savedCalc.title }}
+                            </button>
+                        </div>
+
+                        <div v-else class="calculations-list-empty">
+                            <h5>No Saved Calculations</h5>
+                        </div>
+                    </div>
                     <div class="buttons-cont">
                         <button>Add Patient</button>
                         <button>Edit/View Patient</button>
@@ -123,7 +157,7 @@ async function handleDeletePatient(){
     flex-direction: column;
 }
 
-.content-area :is(.patients-cont, .calculations-table){
+.content-area :is(.patients-cont, .calculations-cont){
     min-height: 400px;
     max-height: 600px;
     overflow: auto;
@@ -145,26 +179,34 @@ async function handleDeletePatient(){
     border-left: 0.2rem solid var(--color-primary);
 }
 
-.patients-list{
+.patients-list, .calculations-list{
     display: flex;
     flex-direction: column;
 }
 
-.patient-btn{
+.calculations-list-empty, .patients-list-empty{
+    padding: 2rem;
+}
+
+.calculations-list-empty h5, .patients-list-empty h5{
+    text-align: center;
+}
+
+.list-btn{
     border-radius: 0;
     padding: 1rem 1.4rem;
 }
 
-.patient-btn.selected, .patient-btn:nth-child(odd).selected{
+.list-btn.selected, .list-btn:nth-child(odd).selected{
     background: var(--color-secondary);
     color: var(--color-bg);
 }
 
-.patient-btn:nth-child(odd){
+.list-btn:nth-child(odd){
     background: var(--color-bg-secondary);
 }
 
-.patient-btn:nth-child(odd):is(:hover, :focus){
+.list-btn:nth-child(odd):is(:hover, :focus){
     background: var(--color-primary);
 }
 

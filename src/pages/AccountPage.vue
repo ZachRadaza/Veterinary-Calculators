@@ -1,10 +1,9 @@
 <script setup>
-import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
 import { useUser } from '../composables/User.js';
+import router from '../router/index.js';
 
 const user = useUser();
-const router = useRouter();
 
 async function logout(){
     await user.logout();

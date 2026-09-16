@@ -3,14 +3,31 @@ import { onMounted, ref } from 'vue';
 import { useCalculator } from '../composables/Calculator.js';
 import PatientChooser from './PatientChooser.vue';
 import { usePatient } from '../composables/Patient.js';
+import DialogSaveCalculation from './dialogs/DialogSaveCalculation.vue';
+import { useCalculation } from '../composables/Calculation.js';
+import router from '../router/index.js';
 
 const calculator = useCalculator();
 const patient = usePatient();
+const calculation = useCalculation();
 
-onMounted(() => {
+const dialogSaveCalculation = ref(null);
+
+const emit = defineEmits(['save-calculation-clicked']);
+
+onMounted(async () => {
     calculator.resetCalculator();
     patient.resetInputtedPatient();
 });
+
+function handleSaveCalculation(){
+    emit('save-calculation-clicked');
+    dialogSaveCalculation.value?.openDialog();
+}
+
+function openSavedCalculation(calculationId, patientId){
+    router.push({ query: { calculationId, patientId } });
+}
 
 </script>
 <template>
@@ -23,8 +40,25 @@ onMounted(() => {
 
     <div class="results-cont" v-if="calculator.showResults.value">
         <slot name="results" />
-        <button @click="calculator.saveCalculation()">Save Calculation</button>
+        <button @click="handleSaveCalculation">Save Calculation</button>
     </div>
+
+    <div class="saved-calculations flex-col" v-if="calculation.calculations?.value?.length > 0">
+        <h5>{{ patient.currentPatient?.value?.name }}'s Saved Calculations</h5>
+        <div class="calculations">
+            <button
+                v-for="savedCalc in calculation.calculations.value"
+                :key="savedCalc.id"
+                @click="openSavedCalculation(savedCalc.id, savedCalc.patientId)"
+            >
+                {{ savedCalc.title }}
+            </button>
+        </div>
+    </div>
+
+    <DialogSaveCalculation 
+        ref="dialogSaveCalculation"
+    />
 </template>
 <style>
 
@@ -111,6 +145,13 @@ h1, h2, h3, h4, h5, h6, p{
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.calculations{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 </style>
