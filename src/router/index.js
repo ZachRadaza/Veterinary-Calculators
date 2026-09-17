@@ -73,4 +73,9 @@ router.afterEach((to) => {
 
 });
 
+export function getRouterLinkTo(path){
+    const patId = router.currentRoute.value.query.patientId;
+    return { path: path, query: { patientId: patId } };
+}
+
 export default router;

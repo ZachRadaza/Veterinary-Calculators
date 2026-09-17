@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useUser } from '../composables/User';
+import router, { getRouterLinkTo } from '../router';
 
 const user = useUser();
 
@@ -9,11 +10,11 @@ const username = computed(() => user.user.value?.username);
 </script>
 <template>
     <header>
-        <RouterLink to="/"><h4>Veterinary Calculators</h4></RouterLink>
+        <RouterLink :to="getRouterLinkTo('/')"><h4>Veterinary Calculators</h4></RouterLink>
         <div class="directory">
-            <RouterLink to="/"><h5>Home</h5></RouterLink>
-            <RouterLink to="/patient"><h5>Patients</h5></RouterLink>
-            <RouterLink to="/account"><h5>{{ username ?? "Account" }}</h5></RouterLink>
+            <RouterLink :to="getRouterLinkTo('/')"><h5>Home</h5></RouterLink>
+            <RouterLink :to="getRouterLinkTo('/patient')"><h5>Patients</h5></RouterLink>
+            <RouterLink :to="getRouterLinkTo('/account')"><h5>{{ username ?? "Account" }}</h5></RouterLink>
         </div>
     </header>
 </template>
