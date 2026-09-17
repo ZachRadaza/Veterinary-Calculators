@@ -125,7 +125,7 @@ function handleStartNewCalculation(){
                         >
                             Remove Patient
                         </button>
-                        <button @click="patient.changeCurrentPatientId(-1)">Clear Section</button>
+                        <button @click="patient.changeCurrentPatientId(-1)">Clear Selection</button>
                     </div>
                 </div>
                 <div class="calculations-area content-area">
