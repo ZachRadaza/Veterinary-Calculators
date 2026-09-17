@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { CalculatorTypes } from '../calculators/CaclulatorTypes';
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
+import { getRouterLinkTo } from '../router/index.js';
 
 const calcAlphabetMap = computed(() => {
     const alphaMap = new Map();
@@ -30,7 +31,7 @@ const calcAlphabetMap = computed(() => {
                     <h3>{{ letter }}</h3>
                     <ul>
                         <li v-for="calc in calcList">
-                            <RouterLink :to="calc.route">{{ calc.name }}</RouterLink>
+                            <RouterLink :to="getRouterLinkTo(calc.route)">{{ calc.name }}</RouterLink>
                         </li>
                     </ul>
                 </div>
