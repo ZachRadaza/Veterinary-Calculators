@@ -6,21 +6,22 @@ import { usePatient } from '../composables/Patient.js';
 import DialogModifyPatient from '../components/dialogs/DialogModifyPatient.vue';
 import DialogBoolean from '../components/dialogs/DialogBoolean.vue';
 import { useCalculation } from '../composables/Calculation.js';
+import router from '../router/index.js';
+import { CalculatorTypes } from '../calculators/CaclulatorTypes.js';
+import DialogSaveCalculation from '../components/dialogs/DialogSaveCalculation.vue';
 
 const patient = usePatient();
 const calculation = useCalculation();
 
 // patients values
-const disablePatientModifyBtns = computed(() => patient.currentPatientId.value === -1);
+const disablePatientModifyBtns = computed(() => patient.currentPatientId.value <= 0);
 const dialogModifyPatient = ref(null);
 const isPatientEditing = ref(false);
-const dialogDeletePatientConfirm = ref(false);
-
-//calculation values
-const selectedCalculationId = ref(-1);
+const dialogDeletePatientConfirm = ref(null);
 
 watch(patient.currentPatientId, async (patId) => {
     await calculation.loadAllPatientSavedCalculations(patId);
+    selectedCalculationId.value = -1;
 });
 
 function handleAddPatient(){
@@ -36,6 +37,50 @@ function handleEditPatient(){
 
 async function handleDeletePatient(){
     dialogDeletePatientConfirm.value?.openDialog();
+}
+
+//calculation values
+const calculatorTypesIdToName = new Map(
+    Object.values(CalculatorTypes).map(({ calculatorId, name }) => [
+        calculatorId,
+        name
+    ])
+);
+
+const selectedCalculationId = ref(-1);
+const selectedCalculation = computed(() => calculation.getCalculation(selectedCalculationId.value));
+const dialogSaveCalcuation = ref(null);
+const disableCalculationModifyBtns = computed(() =>
+    selectedCalculationId.value <= 0 || patient.currentPatientId.value <= 0
+);
+
+function handleOpenCalculation(calculationId){
+    const selectedCalculation = calculation.getCalculation(calculationId);
+    const calculatorName = calculatorTypesIdToName.get(selectedCalculation.calculatorId);
+
+    if(calculatorName)
+        router.push({ 
+            name: calculatorName, 
+            query: { calculationId, patientId: patient.currentPatientId.value }
+        });
+}
+
+function handleEditCalculation(){
+
+
+    dialogSaveCalcuation.value?.openDialog();
+}
+
+function handleRemoveCalculation(){
+    const patientId = patient.currentPatientId.value;
+    const calculationId = selectedCalculationId.value;
+    calculation.deleteCalculation(patientId, calculationId);
+}
+
+function handleStartNewCalculation(){
+    const patientId = patient.currentPatientId.value;
+
+    router.push({ name: 'home', query: { patientId }})
 }
 
 </script>
@@ -95,6 +140,7 @@ async function handleDeletePatient(){
                                 v-for="savedCalc in calculation.calculations.value"
                                 :class="`list-btn secondary ${savedCalc.id === selectedCalculationId ? 'selected' : ''}`"
                                 @click="selectedCalculationId = savedCalc.id"
+                                @dblclick="handleOpenCalculation(savedCalc.id)"
                             >
                                 {{ savedCalc.title }}
                             </button>
@@ -105,10 +151,19 @@ async function handleDeletePatient(){
                         </div>
                     </div>
                     <div class="buttons-cont">
-                        <button>Add Patient</button>
-                        <button>Edit/View Patient</button>
-                        <button>Remove Patient</button>
-                        <button>Clear Section</button> 
+                        <button 
+                            @click="handleOpenCalculation(selectedCalculationId)"
+                            :disabled="disableCalculationModifyBtns"
+                        >Open</button>
+                        <button 
+                            @click="handleEditCalculation"
+                            :disabled="disableCalculationModifyBtns"
+                        >Edit/View Info</button>
+                        <button 
+                            @click="handleRemoveCalculation"
+                            :disabled="disableCalculationModifyBtns"
+                        >Remove Calculation</button>
+                        <button @click="handleStartNewCalculation">Start New</button> 
                     </div>
                 </div>
             </div>
@@ -126,6 +181,14 @@ async function handleDeletePatient(){
             :descriptions="['Are you sure you want to delete this patient? This action cannot be undone.']"
             :option-true="{ text: 'Delete Patient', action: async () => await patient.deletePatient(patient.currentPatientId.value) }"
             :option-false="{ text: 'Cancel', action: () => dialogDeletePatientConfirm.closeDialog() }"
+        />
+
+        <DialogSaveCalculation 
+            ref="dialogSaveCalcuation"
+            :is-editing="true"
+            :existing-title="selectedCalculation?.title"
+            :existing-comments="selectedCalculation?.comments"
+            :calculation-id="selectedCalculationId"
         />
     </body>
 </template>

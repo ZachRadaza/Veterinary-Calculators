@@ -31,7 +31,10 @@ const CalculationService = {
 
         return snapshot.docs.map(calculationDoc => ({
             id: calculationDoc.id,
-            ...calculationDoc.data()
+            title: calculationDoc.data().title,
+            comments: calculationDoc.data().comments,
+            calculatorId: calculationDoc.data().calculatorId,
+            patientId: calculationDoc.data().patientId
         }));
     },
 
