@@ -10,6 +10,24 @@ import CalcRow from '../calculator-rows/CalcRow.vue';
 import { useUser } from '../../composables/User.js';
 import { useCalculation } from '../../composables/Calculation.js';
 
+const {existingTitle, existingComments, isEditing, calculationId} = defineProps({
+    isEditing: {
+        type: Boolean,
+        default: false
+    },
+    existingTitle: {
+        type: String,
+        default: '',
+    },
+    existingComments: {
+        type: String,
+        default: '',
+    },
+    calculationId: {
+        default: ''
+    }
+});
+
 const patient = usePatient();
 const calulator = useCalculator();
 const user = useUser();
@@ -32,7 +50,14 @@ function setTitle(){
 
 function openDialog(){
     selectedPatientId.value = patient.currentPatientId.value === -1 ? '' : patient.currentPatientId.value;
-    setTitle();
+
+    if(!existingTitle && !isEditing)
+        setTitle();
+    else
+        title.value = existingTitle;
+
+    if(isEditing)
+        comments.value = existingComments;
 
     dialogRef.value?.dialogRef?.showModal();
 }
@@ -42,12 +67,15 @@ function closeDialog(){
 }
 
 async function saveCalculation(){
-    if(!selectedPatientId.value || !title.value || !calculation.calculationValues.value)
+    if(!selectedPatientId.value || !title.value)
         return;
 
     loading.value = true;
 
-    await calculation.saveCalculation(selectedPatientId.value, title.value, comments.value);
+    if(isEditing && calculationId) 
+        await calculation.updateCalculation(selectedPatientId.value, calculationId, { title: title.value, comments: comments.value })
+    else if(!isEditing && calculation.calculationValues.valu)
+        await calculation.saveCalculation(selectedPatientId.value, title.value, comments.value);
 
     loading.value = false;
     closeDialog();
