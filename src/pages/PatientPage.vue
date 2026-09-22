@@ -27,12 +27,13 @@ watch(patient.currentPatientId, async (patId) => {
 function handleAddPatient(){
     patient.changeCurrentPatientId(-1);
     isPatientEditing.value = false;
-    dialogModifyPatient.value.openDialog();
+    
+    dialogModifyPatient.value.openDialog(false);
 }
 
 function handleEditPatient(){
     isPatientEditing.value = true;
-    dialogModifyPatient.value.openDialog();
+    dialogModifyPatient.value.openDialog(true);
 }
 
 async function handleDeletePatient(){
@@ -154,15 +155,21 @@ function handleStartNewCalculation(){
                         <button 
                             @click="handleOpenCalculation(selectedCalculationId)"
                             :disabled="disableCalculationModifyBtns"
-                        >Open</button>
+                        >
+                            Open
+                        </button>
                         <button 
                             @click="handleEditCalculation"
                             :disabled="disableCalculationModifyBtns"
-                        >Edit/View Info</button>
+                        >
+                            Edit/View Info
+                        </button>
                         <button 
                             @click="handleRemoveCalculation"
                             :disabled="disableCalculationModifyBtns"
-                        >Remove Calculation</button>
+                        >
+                            Remove Calculation
+                        </button>
                         <button @click="handleStartNewCalculation">Start New</button> 
                     </div>
                 </div>
@@ -170,10 +177,7 @@ function handleStartNewCalculation(){
             <PatientChooser />
         </div>
 
-        <DialogModifyPatient 
-            ref="dialogModifyPatient"
-            :is-editing="isPatientEditing"
-        />
+        <DialogModifyPatient ref="dialogModifyPatient"/>
 
         <DialogBoolean 
             title="Confirm Delete Patient"
