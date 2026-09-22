@@ -11,14 +11,6 @@ import { formatDateForInput } from '../../utils/DateUtils.js';
 import CalcRowInputLabel from '../calculator-rows/CalcRowInputLabel.vue';
 import { usePatient } from '../../composables/Patient.js';
 
-const { isEditing } = defineProps({
-    isEditing: {
-        type: Boolean,
-        required: true,
-        default: false
-    }
-});
-
 const defaultPatientInput = Object.freeze({
     name: '', 
     species: PatientSpecies.DOG, 
@@ -35,13 +27,15 @@ const defaultPatientInput = Object.freeze({
 const patient = usePatient();
 
 const dialogRef = ref(null);
+const isEditing = ref(false);
 const patientInputCopy = ref({...defaultPatientInput});
 const loading = ref(false);
 
-const dialogTitle = computed(() => isEditing ? 'Edit Patient' : 'Add Patient');
+const dialogTitle = computed(() => isEditing.value ? 'Edit Patient' : 'Add Patient');
 
-function openDialog(){
-    patientInputCopy.value = patient.currentPatient.value 
+function openDialog(editing){
+    isEditing.value = editing;
+    patientInputCopy.value = (editing && patient.currentPatient.value)
         ? {...patient.currentPatient.value} 
         : {...defaultPatientInput};
 
@@ -54,7 +48,7 @@ function closeDialog(){
 
 async function handleSave(){
     loading.value = true;
-    if(isEditing){
+    if(isEditing.value){
         await patient.editPatient(patientInputCopy.value);
     } else {
         await patient.addPatient(patientInputCopy.value);
