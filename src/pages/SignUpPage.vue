@@ -79,7 +79,7 @@ async function signUp(){
                 >
                     Create Account
                 </button>
-                <p>Already have an account? <RouterLink to="/login">Login</RouterLink></p>
+                <p>Already have an account? <RouterLink :to="{ path: '/login', query: router.currentRoute.value.query }">Login</RouterLink></p>
             </div>
         </form>
     </div>
