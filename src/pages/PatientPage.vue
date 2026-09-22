@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Header from '../components/Header.vue';
 import PatientChooser from '../components/PatientChooser.vue';
 import { usePatient } from '../composables/Patient.js';
@@ -9,9 +9,11 @@ import { useCalculation } from '../composables/Calculation.js';
 import router from '../router/index.js';
 import { CalculatorTypes } from '../calculators/CaclulatorTypes.js';
 import DialogSaveCalculation from '../components/dialogs/DialogSaveCalculation.vue';
+import { useUser } from '../composables/User.js';
 
 const patient = usePatient();
 const calculation = useCalculation();
+const user = useUser();
 
 // patients values
 const disablePatientModifyBtns = computed(() => patient.currentPatientId.value <= 0);
@@ -19,10 +21,13 @@ const dialogModifyPatient = ref(null);
 const isPatientEditing = ref(false);
 const dialogDeletePatientConfirm = ref(null);
 
-watch(patient.currentPatientId, async (patId) => {
+watch([patient.currentPatientId, user.userId], async ([patId, userId]) => {
+    if(!userId)
+        return;
+    
     await calculation.loadAllPatientSavedCalculations(patId);
     selectedCalculationId.value = -1;
-});
+}, { immediate: true });
 
 function handleAddPatient(){
     patient.changeCurrentPatientId(-1);
