@@ -1,6 +1,7 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
 import { db } from "../Firebase";
 import { USERS_COLLECTION } from "./UsersService";
+import { CALCULATION_COLLECTION } from "./CalculationService";
 
 export const PATIENT_COLLECTION = 'patients';
 
@@ -55,8 +56,26 @@ const PatientService = {
             throw new Error('User Id or Patient Id not passed');
 
         const patientsRef = doc(db, USERS_COLLECTION, userId, PATIENT_COLLECTION, patientId);
+        const calculationsRef = collection(patientsRef, CALCULATION_COLLECTION);
+        const snapshot = await getDocs(calculationsRef);
 
-        await deleteDoc(patientsRef);
+        let batch = writeBatch(db);
+        let operationCount = 0;
+
+        for(const calcDoc of snapshot.docs) {
+            batch.delete(calcDoc.ref);
+            operationCount++;
+
+            if(operationCount === 499){ // 500 operation limit
+                await batch.commit();
+                batch = writeBatch(db);
+                operationCount = 0;
+            }
+        }
+
+        batch.delete(patientsRef);
+        await batch.commit();
+        //await deleteDoc(patientsRef);
     }
 };
 
