@@ -19,7 +19,7 @@ async function login(){
     loading.value = false;
 
     if(!errorMessage.value)
-        router.push({ name: 'home' });
+        router.push({ path: router.currentRoute.value.query.redirect });
 }
 
 </script>
@@ -75,7 +75,7 @@ async function login(){
                 >
                     Login
                 </button>
-                <p>Don't have an account? <RouterLink to="/signup">Sign Up</RouterLink></p>
+                <p>Don't have an account? <RouterLink :to="{ path: '/signup', query: router.currentRoute.value.query }">Sign Up</RouterLink></p>
             </div>
         </form>
     </div>
