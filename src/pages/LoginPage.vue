@@ -19,7 +19,7 @@ async function login(){
     loading.value = false;
 
     if(!errorMessage.value)
-        router.push({ name: 'home' });
+        router.push({ path: router.currentRoute.value.query.redirect });
 }
 
 </script>
