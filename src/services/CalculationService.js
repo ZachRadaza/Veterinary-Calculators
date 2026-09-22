@@ -3,7 +3,7 @@ import { db } from "../Firebase";
 import { USERS_COLLECTION } from "./UsersService";
 import { PATIENT_COLLECTION } from "./PatientService";
 
-const CALCULATION_COLLECTION = 'calculations';
+export const CALCULATION_COLLECTION = 'calculations';
 
 const CalculationService = {
 

@@ -179,7 +179,12 @@ function handleStartNewCalculation(){
             title="Confirm Delete Patient"
             ref="dialogDeletePatientConfirm"
             :descriptions="['Are you sure you want to delete this patient? This action cannot be undone.']"
-            :option-true="{ text: 'Delete Patient', action: async () => await patient.deletePatient(patient.currentPatientId.value) }"
+            :option-true="{ 
+                text: 'Delete Patient', 
+                action: async () => {
+                    await patient.deletePatient(patient.currentPatientId.value);
+                    patient.setCurrentPatientId(-1);
+                }}"
             :option-false="{ text: 'Cancel', action: () => dialogDeletePatientConfirm.closeDialog() }"
         />
 

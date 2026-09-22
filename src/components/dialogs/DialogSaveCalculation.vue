@@ -74,7 +74,7 @@ async function saveCalculation(){
 
     if(isEditing && calculationId) 
         await calculation.updateCalculation(selectedPatientId.value, calculationId, { title: title.value, comments: comments.value })
-    else if(!isEditing && calculation.calculationValues.valu)
+    else if(!isEditing && calculation.calculationValues.value)
         await calculation.saveCalculation(selectedPatientId.value, title.value, comments.value);
 
     loading.value = false;
