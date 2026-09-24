@@ -10,29 +10,28 @@ const calculatorCalculating = ref(false);
 
 const currentCalcType = computed(() => _currentCalcType.value);
 
+function setCurrentCalculatorType(type){
+    _currentCalcType.value = type;
+}
+
+function resetCalculator(){
+    showErrors.value = false;
+    showResults.value = false;
+    calculatorCalculating.value = false;
+}
+
+function startCalculator(){
+    showErrors.value = true;
+    showResults.value = false;
+    calculatorCalculating.value = true;
+}
+
+function endCalculator(){
+    showResults.value = true;
+    calculatorCalculating.value = false;
+}
+
 export function useCalculator(){
-
-    function setCurrentCalculatorType(type){
-        _currentCalcType.value = type;
-    }
-
-    function resetCalculator(){
-        showErrors.value = false;
-        showResults.value = false;
-        calculatorCalculating.value = false;
-    }
-
-    function startCalculator(){
-        showErrors.value = true;
-        showResults.value = false;
-        calculatorCalculating.value = true;
-    }
-
-    function endCalculator(){
-        showResults.value = true;
-        calculatorCalculating.value = false;
-    }
-
     return { 
         currentCalcType, showResults, inputValues, showErrors, calculatorCalculating,
         setCurrentCalculatorType,

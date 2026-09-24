@@ -53,7 +53,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     const user = useUser();
-    console.log(from);
+
     if(to.name === 'account'){
         if(!user.isLoggedIn.value){
             return { name: 'login', query: { redirect: from.fullPath}};
