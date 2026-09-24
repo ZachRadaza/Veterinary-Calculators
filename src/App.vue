@@ -74,6 +74,13 @@ html{
     background: var(--color-bg);
 }
 
+/* page */
+.page{
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
 /* buttons */
 
 button{

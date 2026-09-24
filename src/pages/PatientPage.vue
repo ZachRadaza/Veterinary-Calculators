@@ -91,8 +91,9 @@ function handleStartNewCalculation(){
 
 </script>
 <template>
+<div class="page">
     <Header />
-    <body>
+    <main>
         <div class="content-wrapper">
             <div class="content-container">
                 <div class="patients-area content-area">
@@ -204,11 +205,22 @@ function handleStartNewCalculation(){
             :existing-comments="selectedCalculation?.comments"
             :calculation-id="selectedCalculationId"
         />
-    </body>
+    </main>
+</div>
 </template>
 <style scoped>
 
+main{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    padding: 2rem;
+}
+
 .content-wrapper{
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     border-radius: 1rem;
@@ -219,6 +231,8 @@ function handleStartNewCalculation(){
 }
 
 .content-container{
+    flex: 1;
+    min-height: 0;
     display: grid;
     grid-template-columns: 4fr 6fr;
 }
@@ -230,15 +244,15 @@ function handleStartNewCalculation(){
 }
 
 .content-area{
+    min-height: 0;
     display: flex;
     flex-direction: column;
 }
 
 .content-area :is(.patients-cont, .calculations-cont){
-    min-height: 400px;
-    max-height: 600px;
+    flex: 1;
+    min-height: 0;
     overflow: auto;
-    height: 100%;
 }
 
 .buttons-cont{
