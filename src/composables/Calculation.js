@@ -12,6 +12,14 @@ const calculations = computed(() => [..._calculations.value.values()]);
 const savedCalculation = computed(() => _savedCalculation.value);
 const calculationValues = computed(() => _calculationValues.value);
 
+function getCalculation(calculationId){
+    return _calculations.value.get(calculationId);
+}
+
+function setSavedCalculation(savedCalc){
+    _savedCalculation.value = savedCalc;
+}
+
 export function useCalculation(){
 
     const user = useUser();
@@ -32,14 +40,6 @@ export function useCalculation(){
 
             calculate?.();
         }, { immediate: true });
-    }
-
-    function getCalculation(calculationId){
-        return _calculations.value.get(calculationId);
-    }
-
-    function setSavedCalculation(savedCalc){
-        _savedCalculation.value = savedCalc;
     }
 
     function setCalculationValue(calcValues){

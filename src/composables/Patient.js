@@ -23,6 +23,61 @@ const getPatient = (id) => {
     return _patients.value.get(id) ?? null;
 }
 
+async function loadListOfPatients(userId){
+    try{
+        const patientsList = await PatientService.getPatients(userId);
+        const patientsMap = new Map();
+
+        patientsList.map((patients) => {
+            patientsMap.set(patients.id, patients);
+        });
+
+        _patients.value = patientsMap;
+    } catch(error){
+        console.error('Error in loading list of patients: ', error);
+    }
+}
+
+function changeCurrentPatientId(patientId){
+    if(patientId === _currentPatientId.value)
+        return;
+
+    router.push({ query: { ...router.currentRoute.value.query, patientId }});
+}
+
+function setCurrentPatientId(patientId){
+    if(patientId === _currentPatientId.value)
+        return;
+
+    _currentPatientId.value = patientId;
+
+    //inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
+    
+    if(!inputtedPatient.value)
+        resetInputtedPatient();
+}
+
+function resetInputtedPatient(){
+    if(currentPatient.value)
+        inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
+    else
+        inputtedPatient.value = {
+            id: -1,
+            name: "",
+            species: PatientSpecies.DOG,
+            breed: "",
+            weight: 0,
+            sex: "Male",
+            dob: "2004-07-07",
+            createdAt: "",
+        };
+    router.push({ query: { patientId: currentPatientId.value }});
+}
+
+function validateInputtedPatient(){
+    return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
+}
+
 export function usePatient(){
     
     const user = useUser();
@@ -32,61 +87,6 @@ export function usePatient(){
         watch(user.userId, async (userId) => {
             await loadListOfPatients(userId);
         });
-    }
-
-    async function loadListOfPatients(userId){
-        try{
-            const patientsList = await PatientService.getPatients(userId);
-            const patientsMap = new Map();
-
-            patientsList.map((patients) => {
-                patientsMap.set(patients.id, patients);
-            });
-
-            _patients.value = patientsMap;
-        } catch(error){
-            console.error('Error in loading list of patients: ', error);
-        }
-    }
-
-    function changeCurrentPatientId(patientId){
-        if(patientId === _currentPatientId.value)
-            return;
-
-        router.push({ query: { ...router.currentRoute.value.query, patientId }});
-    }
-
-    function setCurrentPatientId(patientId){
-        if(patientId === _currentPatientId.value)
-            return;
-
-        _currentPatientId.value = patientId;
-
-        //inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
-        
-        if(!inputtedPatient.value)
-            resetInputtedPatient();
-    }
-
-    function resetInputtedPatient(){
-        if(currentPatient.value)
-            inputtedPatient.value = JSON.parse(JSON.stringify(currentPatient.value));
-        else
-            inputtedPatient.value = {
-                id: -1,
-                name: "",
-                species: PatientSpecies.DOG,
-                breed: "",
-                weight: 0,
-                sex: "Male",
-                dob: "2004-07-07",
-                createdAt: "",
-            };
-        router.push({ query: { patientId: currentPatientId.value }});
-    }
-
-    function validateInputtedPatient(){
-        return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
     }
 
     async function addPatient(patient){
