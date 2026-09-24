@@ -57,14 +57,14 @@ watch(
 </script>
 <template>
     <Header />
-    <body>
+    <main>
         <h2 class="title">{{ calculator.currentCalcType.value?.name }} Calculator</h2>
         <component :is="calcTypeComponent" />
-    </body>
+    </main>
 </template>
 <style scoped>
 
-body{
+main{
     padding: 2rem;
 }
 
