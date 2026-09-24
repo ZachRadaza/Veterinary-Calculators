@@ -20,6 +20,107 @@ function setSavedCalculation(savedCalc){
     _savedCalculation.value = savedCalc;
 }
 
+function setCalculationValueHelper(inputtedPatient, calcValues){
+    const completeCalcValues = {
+        patient: inputtedPatient,
+        ...calcValues
+    }
+
+    _calculationValues.value = completeCalcValues;
+}
+
+async function loadAllPatientSavedCalculationsHelper(userId, patientId){
+    try{
+        const loadedCalculations = await CalculationService.getCalculations(
+            userId, 
+            patientId,
+        );
+
+        _calculations.value = new Map(loadedCalculations.map(calc => [calc.id, calc]));
+    } catch(error){
+        console.error('Error in loading all saved calculations: ', error);
+    }
+}
+
+async function loadPatientSavedCalculationsHelper(userId, patientId, calculatorId){
+    try{
+        const loadedCalculations = _calculations.value = await CalculationService.getCalculatorCalculations(
+            userId,
+            patientId,
+            calculatorId
+        );
+
+        _calculations.value = new Map(loadedCalculations.map(calc => [calc.id, calc]));
+    } catch(error){
+        console.error('Error in loading saved calculations: ', error);
+    }
+}
+
+async function loadSavedCalculationHelper(userId, patientId, calculationId){
+    try{            
+        if(!userId || !calculationId && calculationId !== -1)
+            return;
+
+        if(patientId && patientId !== -1)
+            _savedCalculation.value = await CalculationService.getCalculation(
+                userId,
+                patientId,
+                calculationId
+            );
+        else
+            _savedCalculation.value = await CalculationService.getCalculationNoPatientId(
+                userId,
+                calculationId
+            );
+
+        return _savedCalculation.value?.calculationValues;
+    } catch(error){
+        console.error('Error in loading saved calculation: ', error);
+    }
+}
+
+async function saveCalculationHelper(userId, patientId, title, comments, calcTypeId){
+    try{
+        const newCalculation = await CalculationService.addCalculation(
+            userId,
+            patientId,
+            title,
+            comments,
+            calculationValues.value,
+            calculator.currentCalcType?.value?.calculatorId
+        );
+
+        _calculations.value.set(newCalculation.id, newCalculation);            
+    } catch(error){
+        console.error('Error in saving calculation: ', error);
+    }
+}
+
+async function updateCalculationHelper(userId, patientId, calculationId, calculation){
+    try{
+        const updatedCalcuation = await CalculationService.updateCalculation(
+            userId,
+            patientId,
+            calculationId,
+            calculation
+        );
+
+        _calculations.value.set(updatedCalcuation.id, updatedCalcuation);
+    } catch(error){
+        console.error('Error in updating calculation', error);
+    }
+}
+
+async function deleteCalculationHelper(userId, patientId, calculationId){
+    try{
+        await CalculationService.deleteCalculation(userId, patientId, calculationId);
+
+        _calculations.value.delete(calculationId);
+    } catch(error){
+        console.error('Error in deleting calculation', error);
+    } 
+}
+
 export function useCalculation(){
 
     const user = useUser();
@@ -43,104 +144,31 @@ export function useCalculation(){
     }
 
     function setCalculationValue(calcValues){
-        const completeCalcValues = {
-            patient: patient.inputtedPatient.value,
-            ...calcValues
-        }
-
-        _calculationValues.value = completeCalcValues;
+        setCalculationValueHelper(patient.inputtedPatient.value, calcValues);
     }
 
     async function loadAllPatientSavedCalculations(patientId){
-        try{
-            const loadedCalculations = await CalculationService.getCalculations(
-                user.userId.value, 
-                patientId,
-            );
-
-            _calculations.value = new Map(loadedCalculations.map(calc => [calc.id, calc]));
-        } catch(error){
-            console.error('Error in loading all saved calculations: ', error);
-        }
+        return loadAllPatientSavedCalculationsHelper(user.userId.value, patientId);
     }
 
     async function loadPatientSavedCalculations(patientId, calculatorId){
-        try{
-            const loadedCalculations = _calculations.value = await CalculationService.getCalculatorCalculations(
-                user.userId.value,
-                patientId,
-                calculatorId
-            );
-
-            _calculations.value = new Map(loadedCalculations.map(calc => [calc.id, calc]));
-        } catch(error){
-            console.error('Error in loading saved calculations: ', error);
-        }
+        return loadAllPatientSavedCalculationsHelper(user.userId.value, patientId, calculatorId);
     }
 
     async function loadSavedCalculation(patientId, calculationId){
-        try{            
-            if(!user.userId.value || !calculationId && calculationId !== -1)
-                return;
-
-            if(patientId && patientId !== -1)
-                _savedCalculation.value = await CalculationService.getCalculation(
-                    user.userId.value,
-                    patientId,
-                    calculationId
-                );
-            else
-                _savedCalculation.value = await CalculationService.getCalculationNoPatientId(
-                    user.userId.value,
-                    calculationId
-                );
-
-            return _savedCalculation.value?.calculationValues;
-        } catch(error){
-            console.error('Error in loading saved calculation: ', error);
-        }
+        return loadSavedCalculationHelper(user.userId.value, patientId, calculationId);
     }
 
     async function saveCalculation(patientId, title, comments, calcTypeId){
-        try{
-            const newCalculation = await CalculationService.addCalculation(
-                user.userId.value,
-                patientId,
-                title,
-                comments,
-                calculationValues.value,
-                calculator.currentCalcType?.value?.calculatorId
-            );
-
-            _calculations.value.set(newCalculation.id, newCalculation);            
-        } catch(error){
-            console.error('Error in saving calculation: ', error);
-        }
+        return saveCalculationHelper(user.userId.value, patientId, title, comments. calcTypeId);
     }
 
     async function updateCalculation(patientId, calculationId, calculation){
-        try{
-            const updatedCalcuation = await CalculationService.updateCalculation(
-                user.userId.value,
-                patientId,
-                calculationId,
-                calculation
-            );
-
-            _calculations.value.set(updatedCalcuation.id, updatedCalcuation);
-        } catch(error){
-            console.error('Error in updating calculation', error);
-        }
+        return updateCalculationHelper(user.userId.value, patientId, calculationId, calculation);
     }
 
     async function deleteCalculation(patientId, calculationId){
-        try{
-            await CalculationService.deleteCalculation(user.userId.value, patientId, calculationId);
-
-            _calculations.value.delete(calculationId);
-        } catch(error){
-            console.error('Error in deleting calculation', error);
-        }
+        return deleteCalculationHelper(user.userId.value, patientId, calculationId);
     }
 
     return {

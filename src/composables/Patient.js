@@ -78,62 +78,75 @@ function validateInputtedPatient(){
     return validInputtedPatientSpecies.value && validInputtedPatientWeight.value;
 }
 
+async function addPatientHelper(userId, patient){
+    try{
+        const addedPatient =  await PatientService.addPatient(
+            userId,
+            patient.name,
+            patient.species,
+            patient.breed,
+            patient.weight,
+            patient.sex,
+            patient.dateOfBirth,
+            patient.patientNum,
+            patient.clientName,
+            patient.color,
+            patient.comments
+        );
+        
+        if(!addedPatient)
+            return null;
+
+        _patients.value.set(addedPatient.id, addedPatient);
+        return addedPatient;
+    } catch(error){
+        console.error('Error in adding patient', error);
+    }
+}
+
+async function editPatientHelper(userId, patient){
+    try{
+        const editedPatient =  await PatientService.updatePatient(userId, patient.id, patient);
+        
+        _patients.value.set(editedPatient.id, editedPatient);
+        return editedPatient;
+    } catch(error){
+        console.error('Error in editing patient', error);
+    }
+}
+
+async function deletePatientHelper(userId, patientId){
+    try{
+        await PatientService.deletePatient(userId, patientId);
+
+        _patients.value.delete(patientId);
+        return true;
+    } catch(error){
+        console.error('Error in deleting patient', error);
+        return false;
+    }
+}
+
 export function usePatient(){
     
     const user = useUser();
 
     async function init(){
-
         watch(user.userId, async (userId) => {
             await loadListOfPatients(userId);
         });
     }
 
     async function addPatient(patient){
-        try{
-            const addedPatient =  await PatientService.addPatient(
-                user.userId.value,
-                patient.name,
-                patient.species,
-                patient.breed,
-                patient.weight,
-                patient.sex,
-                patient.dateOfBirth,
-                patient.patientNum,
-                patient.clientName,
-                patient.color,
-                patient.comments
-            );
-            
-            if(!addedPatient)
-                return null;
-
-            _patients.value.set(addedPatient.id, addedPatient);
-            return addedPatient;
-        } catch(error){
-            console.error('Error in adding patient', error);
-        }
+        return addPatientHelper(user.userId.value, patient);
     }
 
     async function editPatient(patient){
-        try{
-            const editedPatient =  await PatientService.updatePatient(user.userId.value, patient.id, patient);
-            
-            _patients.value.set(editedPatient.id, editedPatient);
-            return editedPatient;
-        } catch(error){
-            console.error('Error in editing patient', error);
-        }
+        return editPatientHelper(user.userId.value, patient);
     }
 
     async function deletePatient(patientId){
-        try{
-            await PatientService.deletePatient(user.userId.value, patientId);
-
-            _patients.value.delete(patientId);
-        } catch(error){
-            console.error('Error in deleting patient', error);
-        }
+        return deletePatientHelper(user.userId.value, patientId);
     }
 
     return {
