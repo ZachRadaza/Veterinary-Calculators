@@ -68,6 +68,9 @@ watch(
 
 main{
     padding: 2rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
 }
 
 .title{
