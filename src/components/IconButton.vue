@@ -20,14 +20,6 @@ defineProps({
 </template>
 <style scoped>
 
-.icon{
-    width: 1.5rem;
-    height: auto;
-    color: var(--color-text);
-    fill: var(--color-text);
-    stroke: var(--color-text);
-}
-
 button:is(:hover, :focus) .icon{
     color: var(--color-primary);
     fill: var(--color-primary);

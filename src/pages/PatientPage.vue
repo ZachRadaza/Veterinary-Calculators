@@ -258,6 +258,7 @@ main{
 .buttons-cont{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: left;
     gap: 0.5rem;
@@ -301,4 +302,25 @@ main{
     background: var(--color-primary);
 }
 
+@media (max-width: 850px){
+    .content-container{
+        grid-template-columns: 1fr 1fr;
+    }    
+
+    .buttons-cont{
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 600px){
+    main{
+        padding: 1rem;
+    }
+
+    .content-container{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+}
 </style>

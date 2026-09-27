@@ -11,11 +11,13 @@ async function logout(){
 
 </script>
 <template>
+<div class="page">
     <Header />
     <main>
         <h5>ACCOUNT TEMP</h5>
         <button @click="logout">Logout</button>
     </main>
+</div>
 </template>
 <style>
 </style>

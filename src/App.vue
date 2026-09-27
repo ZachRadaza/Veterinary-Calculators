@@ -35,6 +35,8 @@ onUnmounted(() => {
     --font-body: 'Open Sans', sans-serif;
 }
 
+/* text */
+
 h1, h2, h3, h4, h5, h6{
     font-family: var(--font-heading);
     line-height: 1.2;
@@ -72,13 +74,6 @@ small{
 html{
     font-size: 14px;
     background: var(--color-bg);
-}
-
-/* page */
-.page{
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
 }
 
 /* buttons */
@@ -230,11 +225,11 @@ li{
 
 /* all */
 :is(input, select).short{
-    width: 100px;
+    width: clamp(50px, 10dvw,100px);
 }
 
 :is(input, select).long{
-    width: 350px;
+    width: clamp(210px, 30dvw, 300px);
 }
 
 :is(input, textarea, select).error,
@@ -243,4 +238,33 @@ li{
     outline: var(--color-error);
 }
 
+/* page layout */
+
+.page{
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 600px){
+    .page{
+        flex-direction: column-reverse;
+        justify-content: space-between;
+    }
+}
+
+/* icons */
+.icon{
+    width: 1.5rem;
+    height: auto;
+    color: var(--color-text);
+    fill: var(--color-text);
+    stroke: var(--color-text);
+}
+
+.icon.background{
+    color: var(--color-bg);
+    fill: var(--color-bg);
+    stroke: var(--color-bg);
+}
 </style>

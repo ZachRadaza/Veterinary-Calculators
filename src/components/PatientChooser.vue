@@ -2,6 +2,8 @@
 import { computed, ref, watch } from 'vue';
 import { usePatient } from '../composables/Patient';
 import { getAge } from '../utils/DateUtils';
+import IconButton from './IconButton.vue';
+import SearchIcon from '../assets/icon/SearchIcon.vue';
 
 const patient = usePatient();
 
@@ -83,12 +85,11 @@ function getFuzzyScore(name, query){
                 @keyup.enter="handleSearch"
             />
 
-            <button 
-                @click="handleSearch"
+            <IconButton 
                 class="secondary"
-            >
-                Search
-            </button>
+                @click="handleSearch"
+                :icon="SearchIcon"
+            />
 
         </div>
         <div v-if="currentPatient" class="patient-info">
@@ -126,6 +127,10 @@ function getFuzzyScore(name, query){
 
 }
 
+.patient-input input{
+    min-width: 0;
+}
+
 .patient-input > :last-child{
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
@@ -139,6 +144,16 @@ function getFuzzyScore(name, query){
 .patient-info h5{
     color: var(--color-bg);
     text-align: center;
+}
+
+@media (max-width: 600px){
+    .patient-chooser{
+        gap: 0.5rem;
+    }
+
+    .patient-info h5{
+        line-height: 1.3;
+    }
 }
 
 </style>
