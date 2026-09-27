@@ -45,8 +45,4 @@ function handleInputChange(){
     align-items: center;
 }
 
-.input-label.short input{
-    width: 100px;
-}
-
 </style>

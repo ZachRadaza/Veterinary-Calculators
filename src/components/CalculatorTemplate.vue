@@ -139,6 +139,7 @@ h1, h2, h3, h4, h5, h6, p{
     flex-direction: row;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .flex-col{
@@ -152,6 +153,32 @@ h1, h2, h3, h4, h5, h6, p{
     flex-direction: row;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+@media (max-width: 600px){
+    .calculator-container{
+        margin: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6, p{
+        line-height: 1.3;
+    }
+}
+
+@media (max-width: 450px){
+
+    .calc-row{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calc-row >:first-child{
+        align-self: flex-start;
+        text-align: left;
+    }
 }
 
 </style>
