@@ -57,6 +57,7 @@ main{
     flex: none;
     text-align: center;
     margin: 1rem;
+    line-height: 1.3;
 }
 
 .content-container{
@@ -75,6 +76,12 @@ main{
     min-height: 0;
     padding: 1rem;
     overflow-y: auto;
+}
+
+@media (max-width: 600px){
+    main{
+        padding: 1rem;
+    }
 }
 
 </style>

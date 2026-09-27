@@ -122,4 +122,10 @@ form{
     color: var(--color-error);
 }
 
+@media (max-width: 600px){
+    .below-password{
+        flex-direction: column;
+    }
+}
+
 </style>

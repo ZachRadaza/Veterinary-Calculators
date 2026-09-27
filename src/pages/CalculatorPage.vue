@@ -56,11 +56,13 @@ watch(
 
 </script>
 <template>
-    <Header />
-    <main>
-        <h2 class="title">{{ calculator.currentCalcType.value?.name }} Calculator</h2>
-        <component :is="calcTypeComponent" />
-    </main>
+    <div class="page">
+        <Header />
+        <main>
+            <h2 class="title">{{ calculator.currentCalcType.value?.name }} Calculator</h2>
+            <component :is="calcTypeComponent" />
+        </main>
+    </div>
 </template>
 <style scoped>
 
@@ -71,6 +73,12 @@ main{
 .title{
     text-align: center;
     margin: 1rem;
+}
+
+@media (max-width: 600px){
+    .title{
+        line-height: 1.3;
+    }
 }
 
 </style>
