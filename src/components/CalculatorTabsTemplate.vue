@@ -108,6 +108,9 @@ defineExpose({
     margin: 1rem;
     margin-bottom: 0;
     gap: 0.5rem;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
 }
 
 .tab-btn{
