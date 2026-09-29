@@ -1,7 +1,6 @@
 import { computed, ref, watch } from "vue";
 import CalculationService from "../services/CalculationService";
 import { useUser } from "./User";
-import { useCalculator } from "./Calculator";
 import { usePatient } from "./Patient";
 
 const _calculations = ref(new Map());
@@ -124,7 +123,6 @@ async function deleteCalculationHelper(userId, patientId, calculationId){
 export function useCalculation(){
 
     const user = useUser();
-    const calculator = useCalculator();
     const patient = usePatient();
 
     function init(calcRefs = {}, calculate){
@@ -139,6 +137,7 @@ export function useCalculation(){
                     valueRef.value = calcValues[key];
             });
 
+            console.log('calculate');
             calculate?.();
         }, { immediate: true });
     }

@@ -15,8 +15,9 @@ const dialogSaveCalculation = ref(null);
 
 const emit = defineEmits(['save-calculation-clicked']);
 
-onMounted(async () => {
+onMounted(() => {
     calculator.resetCalculator();
+    calculation.setSavedCalculation(null);
     patient.resetInputtedPatient();
 });
 
