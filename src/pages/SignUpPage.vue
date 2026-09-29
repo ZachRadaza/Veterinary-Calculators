@@ -82,6 +82,10 @@ async function signUp(){
                 <p>Already have an account? <RouterLink :to="{ path: '/login', query: router.currentRoute.value.query }">Login</RouterLink></p>
             </div>
         </form>
+        <div class="navigation-row flex-row">
+            <RouterLink :to="{ path: router.currentRoute.value.query.redirect }">Back</RouterLink>
+            <RouterLink :to="{ name: 'home' }">Home</RouterLink>
+        </div>
     </div>
 </template>
 <style scoped>
@@ -124,6 +128,11 @@ form{
 .error-text{
     text-align: center;
     color: var(--color-error);
+}
+
+.navigation-row{
+    width: 100%;
+    justify-content: space-around;
 }
 
 </style>
