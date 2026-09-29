@@ -152,7 +152,7 @@ export function useCalculation(){
     }
 
     async function loadPatientSavedCalculations(patientId, calculatorId){
-        return loadAllPatientSavedCalculationsHelper(user.userId.value, patientId, calculatorId);
+        return loadPatientSavedCalculationsHelper(user.userId.value, patientId, calculatorId);
     }
 
     async function loadSavedCalculation(patientId, calculationId){
