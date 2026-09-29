@@ -7,27 +7,26 @@ import router from '../router/index.js';
 const user = useUser();
 
 const email = ref('');
-const password = ref('');
-const rememberMe = ref(false);
 const loading = ref(false);
 const errorMessage = ref('');
+const showForgetPasswordMsg = ref(false);
 
-async function login(){
+async function forgetPassword(){
     loading.value = true;
-    
-    errorMessage.value = await user.login(email.value, password.value, rememberMe.value);
+
+    errorMessage.value = await user.forgetPassword(email.value);
     loading.value = false;
 
     if(!errorMessage.value)
-        router.push({ path: router.currentRoute.value.query.redirect });
+        showForgetPasswordMsg.value = true;
 }
 
 </script>
 <template>
-    <div class="form-wrapper flex-col">
-        <h3>Login</h3>
+<div class="form-wrapper flex-col">
+        <h3>Forget Password?</h3>
         <form 
-            @submit.prevent="login"
+            @submit.prevent="forgetPassword"
             class="flex-col"
         >
 
@@ -47,34 +46,17 @@ async function login(){
                 required
             />
 
-            <div class="flex-col">
-                <LabeledInput 
-                    v-model="password"
-                    label="Password"
-                    type="password"
-                    class="long"
-                    placeholder="super secret password"
-                    required
-                />
-                <div class="below-password flex-row">
-                    <label>
-                        <input type="checkbox" v-model="rememberMe"/>
-                        Remember Me
-                    </label>
-
-                    <RouterLink to="/forgetpassword">Forget Password?</RouterLink>
-                </div>
-            </div>
+            <h6 v-if="showForgetPasswordMsg">An email was sent with instructions.</h6>
 
             <div class="submit-btn-cont flex-col">
                 <button 
                     type="submit"
                     :disabled="loading"
-                    id="login-btn"
+                    id="send-email-btn"
                 >
-                    Login
+                    Send Email Reset Link
                 </button>
-                <p>Don't have an account? <RouterLink :to="{ path: '/signup', query: router.currentRoute.value.query }">Sign Up</RouterLink></p>
+                <p>Have an account? <RouterLink :to="{ path: '/login' }">Login</RouterLink></p>
             </div>
         </form>
         <div class="navigation-row flex-row">
@@ -102,22 +84,18 @@ form{
 }
 
 .submit-btn-cont{
-    gap: 0;
+    gap: 0.5rem;
     align-items: center;
     box-sizing: border-box;
 }
 
-.submit-btn-cont #login-btn{
+.submit-btn-cont #send-email-btn{
     width: 90%;
     text-align: center;
 }
 
-#login-btn:disabled{
+#send-email-btn:disabled{
     cursor: progress;
-}
-
-.below-password{
-    justify-content: space-between;
 }
 
 .error-text{
@@ -129,11 +107,4 @@ form{
     width: 100%;
     justify-content: space-around;
 }
-
-@media (max-width: 600px){
-    .below-password{
-        flex-direction: column;
-    }
-}
-
 </style>

@@ -73,9 +73,26 @@ async function getCurrentUser(){
     user.value = await UsersService.getCurrentUser();
 }
 
+async function forgetPassword(email){
+    let errorMessage = '';
+    try{
+        if(!email){
+            errorMessage = 'Please enter an email address'
+            return errorMessage;
+        }
+
+        await UsersService.forgetPassword(email);
+
+    } catch(error){
+        console.error(error);
+    } finally{
+        return errorMessage;
+    }
+}
+
 export function useUser(){
     return {
         user, isLoggedIn, userId,
-        login, signUp, logout, getCurrentUser
+        login, signUp, logout, getCurrentUser, forgetPassword
     };
 }
