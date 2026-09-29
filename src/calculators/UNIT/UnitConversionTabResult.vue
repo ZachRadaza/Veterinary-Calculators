@@ -10,9 +10,9 @@ defineProps({
 </script>
 <template>
     <h5>
-        {{ results.fromAmount }} {{ results.fromUnit }}
+        {{ results?.fromAmount }} {{ results?.fromUnit }}
         = 
-        {{ results.toAmount }} {{ results.toUnit}}
+        {{ results?.toAmount }} {{ results?.toUnit}}
     </h5>    
 </template>
 <style scoped>

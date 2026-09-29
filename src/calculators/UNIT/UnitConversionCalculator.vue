@@ -70,12 +70,12 @@ const bloodAmountUnitLabel = computed(() =>
 const bloodTestError = computed(() => 
     bloodTestValues.value.bloodTest <= 0 && 
     calculator.showErrors.value && 
-    tabTemplate.value.showErrors(UnitConversionTabs.TAB1)
+    tabTemplate.value?.showErrors(UnitConversionTabs.TAB1)
 );
 const bloodAmountError = computed(() => 
     bloodTestValues.value.amount <= 0 && 
     calculator.showErrors.value && 
-    tabTemplate.value.showErrors(UnitConversionTabs.TAB1)
+    tabTemplate.value?.showErrors(UnitConversionTabs.TAB1)
 );
 
 watch(() => bloodTestValues.value.category, () => { 
@@ -131,7 +131,7 @@ const temperatureResults = ref(null);
 const temperatureAmountError = computed(() => 
     isNaN(temperatureValues.value.amount) &&
     calculator.showErrors.value && 
-    tabTemplate.value.showErrors(UnitConversionTabs.TAB2)
+    tabTemplate.value?.showErrors(UnitConversionTabs.TAB2)
 );
 
 watch(() => temperatureValues.value.conversionTo, (unit) => {
@@ -297,7 +297,7 @@ onMounted(() => {
         <template #[`result-${UnitConversionTabs.TAB1}`]>
             <h5>
                 {{ bloodResults?.originalAmount }} {{ bloodResults?.originalUnit }} of {{ bloodResults?.name }} 
-                converts to {{ roundToThousandth(bloodResults?.convertedAmount) }} {{ bloodResults.convertedUnit }}
+                converts to {{ roundToThousandth(bloodResults?.convertedAmount) }} {{ bloodResults?.convertedUnit }}
             </h5>
         </template>
 
@@ -344,7 +344,7 @@ onMounted(() => {
 
         <template #[`result-${UnitConversionTabs.TAB3}`]>
             <UnitConversionTabResult 
-                :results="volume.results.value"
+                :results="volume.results?.value"
             />
         </template>
 
@@ -363,7 +363,7 @@ onMounted(() => {
 
         <template #[`result-${UnitConversionTabs.TAB4}`]>
             <UnitConversionTabResult 
-                :results="weight.results.value"
+                :results="weight.results?.value"
             />
         </template>
 
@@ -382,7 +382,7 @@ onMounted(() => {
 
         <template #[`result-${UnitConversionTabs.TAB5}`]>
             <UnitConversionTabResult 
-                :results="time.results.value"
+                :results="time.results?.value"
             />
         </template>
 
@@ -401,7 +401,7 @@ onMounted(() => {
 
         <template #[`result-${UnitConversionTabs.TAB6}`]>
             <UnitConversionTabResult 
-                :results="length.results.value"
+                :results="length.results?.value"
             />
         </template>
     </CalculatorTabsTemplate>
