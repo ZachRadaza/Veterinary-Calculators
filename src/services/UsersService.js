@@ -1,4 +1,4 @@
-import { browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail, setPersistence, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -63,6 +63,13 @@ const UsersService = {
             id: user.id,
             ...user.data()
         }
+    },
+
+    async forgetPassword(email){
+        if(!email)
+            return null;
+
+        sendPasswordResetEmail(auth, email);
     }
 
 };

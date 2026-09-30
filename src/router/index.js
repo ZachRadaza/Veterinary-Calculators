@@ -9,6 +9,7 @@ import SignUpPage from "../pages/SignUpPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import { useUser } from "../composables/User.js";
 import { usePatient } from "../composables/Patient.js";
+import ForgetPasswordPage from "../pages/ForgetPasswordPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -37,6 +38,11 @@ const router = createRouter({
             path: "/signup",
             name: "signup",
             component: SignUpPage,
+        },
+        {
+            path: "/forget-password",
+            name: "forgetpassword",
+            component: ForgetPasswordPage,
         },
         ...Object.values(CalculatorTypes).map((calculator) => ({
             path: calculator.route,
