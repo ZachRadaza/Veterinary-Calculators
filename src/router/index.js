@@ -40,7 +40,7 @@ const router = createRouter({
             component: SignUpPage,
         },
         {
-            path: "/forgetpassword",
+            path: "/forget-password",
             name: "forgetpassword",
             component: ForgetPasswordPage,
         },

@@ -58,7 +58,7 @@ async function login(){
                     Remember Me
                 </label>
 
-                <RouterLink to="/forgetpassword">Forget Password?</RouterLink>
+                <RouterLink to="/forget-password">Forget Password?</RouterLink>
             </div>
         </div>
 
@@ -75,37 +75,6 @@ async function login(){
     </AuthTemplate>
 </template>
 <style scoped>
-
-.form-wrapper{
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-}
-
-form{
-    padding: 1rem;
-    border: 0.1rem solid var(--color-secondary);
-    border-radius: 2rem;
-    background: var(--color-bg-secondary);
-    gap: 1.5rem;
-}
-
-.submit-btn-cont{
-    gap: 0;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.submit-btn-cont #login-btn{
-    width: 90%;
-    text-align: center;
-}
-
-#login-btn:disabled{
-    cursor: progress;
-}
 
 .below-password{
     justify-content: space-between;
