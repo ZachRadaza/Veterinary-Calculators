@@ -1,8 +1,8 @@
 import { computed, ref, watch } from "vue";
-import PatientService from "../services/PatientService";
 import { PatientSpecies } from "../utils/PatientSpecies";
 import { useUser } from "./User";
 import router from "../router";
+import { addPatient, deletePatient, getPatients, updatePatient } from "../services/PatientService";
 
 const _currentPatientId = ref(0);
 const _patients = ref(new Map());
@@ -25,7 +25,7 @@ const getPatient = (id) => {
 
 async function loadListOfPatients(userId){
     try{
-        const patientsList = await PatientService.getPatients(userId);
+        const patientsList = await getPatients(userId);
         const patientsMap = new Map();
 
         patientsList.map((patients) => {
@@ -80,7 +80,7 @@ function validateInputtedPatient(){
 
 async function addPatientHelper(userId, patient){
     try{
-        const addedPatient =  await PatientService.addPatient(
+        const addedPatient =  await addPatient(
             userId,
             patient.name,
             patient.species,
@@ -106,7 +106,7 @@ async function addPatientHelper(userId, patient){
 
 async function editPatientHelper(userId, patient){
     try{
-        const editedPatient =  await PatientService.updatePatient(userId, patient.id, patient);
+        const editedPatient =  await updatePatient(userId, patient.id, patient);
         
         _patients.value.set(editedPatient.id, editedPatient);
         return editedPatient;
@@ -117,7 +117,7 @@ async function editPatientHelper(userId, patient){
 
 async function deletePatientHelper(userId, patientId){
     try{
-        await PatientService.deletePatient(userId, patientId);
+        await deletePatient(userId, patientId);
 
         _patients.value.delete(patientId);
         return true;

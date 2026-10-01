@@ -5,78 +5,73 @@ import { CALCULATION_COLLECTION } from "./CalculationService";
 
 export const PATIENT_COLLECTION = 'patients';
 
-const PatientService = {
-    
-    async getPatients(uid){
-        if(!uid)
-            return [];
+export async function getPatients(uid){
+    if(!uid)
+        return [];
 
-        const patientsRef = collection(db, USERS_COLLECTION, uid, PATIENT_COLLECTION);
+    const patientsRef = collection(db, USERS_COLLECTION, uid, PATIENT_COLLECTION);
 
-        const snapshot = await getDocs(patientsRef);
+    const snapshot = await getDocs(patientsRef);
 
-        return snapshot.docs.map(patientDoc => ({
-            id: patientDoc.id,
-            ...patientDoc.data()
-        }));
-    },
+    return snapshot.docs.map(patientDoc => ({
+        id: patientDoc.id,
+        ...patientDoc.data()
+    }));
+}
 
-    async addPatient(userId, name, species, breed, weight, sex, dateOfBirth, patientNum, clientName, color, comments){
-        if(!name || !species || !breed || !weight || !sex || !dateOfBirth)//required att
-            throw new Error('Missing values');
+export async function addPatient(userId, name, species, breed, weight, sex, dateOfBirth, patientNum, clientName, color, comments){
+    if(!name || !species || !breed || !weight || !sex || !dateOfBirth)//required att
+        throw new Error('Missing values');
 
-        const patient = { name, species, breed, weight, sex, dateOfBirth, patientNum, clientName, color, comments };
+    const patient = { name, species, breed, weight, sex, dateOfBirth, patientNum, clientName, color, comments };
 
-        const patientsRef = collection(db, USERS_COLLECTION, userId, PATIENT_COLLECTION);
+    const patientsRef = collection(db, USERS_COLLECTION, userId, PATIENT_COLLECTION);
 
-        const newPatient = await addDoc(patientsRef, patient);
+    const newPatient = await addDoc(patientsRef, patient);
 
-        return {
-            id: newPatient.id,
-            ...patient
-        };
-    },
+    return {
+        id: newPatient.id,
+        ...patient
+    };
+}
 
-    async updatePatient(userId, patientId, patient){
-        if(!userId || !patientId || !patient)
-            throw new Error('User Id, Patient Id, or patient not passed');
+export async function updatePatient(userId, patientId, patient){
+    if(!userId || !patientId || !patient)
+        throw new Error('User Id, Patient Id, or patient not passed');
 
-        const patientsRef = doc(db, USERS_COLLECTION, userId, PATIENT_COLLECTION, patientId);
+    const patientsRef = doc(db, USERS_COLLECTION, userId, PATIENT_COLLECTION, patientId);
 
-        await updateDoc(patientsRef, patient);
+    await updateDoc(patientsRef, patient);
 
-        return {
-            id: patientId,
-            ...patient
-        }
-    },
-
-    async deletePatient(userId, patientId){
-        if(!userId || !patientId)
-            throw new Error('User Id or Patient Id not passed');
-
-        const patientsRef = doc(db, USERS_COLLECTION, userId, PATIENT_COLLECTION, patientId);
-        const calculationsRef = collection(patientsRef, CALCULATION_COLLECTION);
-        const snapshot = await getDocs(calculationsRef);
-
-        let batch = writeBatch(db);
-        let operationCount = 0;
-
-        for(const calcDoc of snapshot.docs) {
-            batch.delete(calcDoc.ref);
-            operationCount++;
-
-            if(operationCount === 499){ // 500 operation limit
-                await batch.commit();
-                batch = writeBatch(db);
-                operationCount = 0;
-            }
-        }
-
-        batch.delete(patientsRef);
-        await batch.commit();
-        //await deleteDoc(patientsRef);
+    return {
+        id: patientId,
+        ...patient
     }
-};
+}
 
-export default PatientService;
+export async function deletePatient(userId, patientId){
+    if(!userId || !patientId)
+        throw new Error('User Id or Patient Id not passed');
+
+    const patientsRef = doc(db, USERS_COLLECTION, userId, PATIENT_COLLECTION, patientId);
+    const calculationsRef = collection(patientsRef, CALCULATION_COLLECTION);
+    const snapshot = await getDocs(calculationsRef);
+
+    let batch = writeBatch(db);
+    let operationCount = 0;
+
+    for(const calcDoc of snapshot.docs) {
+        batch.delete(calcDoc.ref);
+        operationCount++;
+
+        if(operationCount === 499){ // 500 operation limit
+            await batch.commit();
+            batch = writeBatch(db);
+            operationCount = 0;
+        }
+    }
+
+    batch.delete(patientsRef);
+    await batch.commit();
+    //await deleteDoc(patientsRef);
+}
