@@ -5,181 +5,175 @@ import { PATIENT_COLLECTION } from "./PatientService";
 
 export const CALCULATION_COLLECTION = 'calculations';
 
-const CalculationService = {
+export function validateId(id){
+    if(typeof id === 'number')
+        return id > 0;
 
-    validateId(id){
-        if(typeof id === 'number')
-            return id > 0;
+    return id && typeof id === 'string';
+}
 
-        return id && typeof id === 'string';
-    },
+export async function getCalculations(userId, patientId){
+    if(!userId || !validateId(patientId))
+        return [];
 
-    async getCalculations(userId, patientId){
-        if(!userId || !this.validateId(patientId))
-            return [];
+    const calculationRef = collection(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION
+    );
 
-        const calculationRef = collection(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION
-        );
+    const snapshot = await getDocs(calculationRef);
 
-        const snapshot = await getDocs(calculationRef);
+    return snapshot.docs.map(calculationDoc => ({
+        id: calculationDoc.id,
+        title: calculationDoc.data().title,
+        comments: calculationDoc.data().comments,
+        calculatorId: calculationDoc.data().calculatorId,
+        patientId: calculationDoc.data().patientId
+    }));
+}
 
-        return snapshot.docs.map(calculationDoc => ({
-            id: calculationDoc.id,
-            title: calculationDoc.data().title,
-            comments: calculationDoc.data().comments,
-            calculatorId: calculationDoc.data().calculatorId,
-            patientId: calculationDoc.data().patientId
-        }));
-    },
+export async function getCalculatorCalculations(userId, patientId, calculatorId){
+    if(!userId || !validateId(patientId) || !validateId(calculatorId))
+        return [];
 
-    async getCalculatorCalculations(userId, patientId, calculatorId){
-        if(!userId || !this.validateId(patientId) || !this.validateId(calculatorId))
-            return [];
+    const calculationRef = collection(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION
+    );
 
-        const calculationRef = collection(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION
-        );
+    const qWhere = where('calculatorId', '==', calculatorId);
+    const qOrderBy = orderBy('createdAt', 'asc');
+    const qQuery = query(calculationRef, qWhere, qOrderBy);
 
-        const qWhere = where('calculatorId', '==', calculatorId);
-        const qOrderBy = orderBy('createdAt', 'asc');
-        const qQuery = query(calculationRef, qWhere, qOrderBy);
+    const snapshot = await getDocs(qQuery);
 
-        const snapshot = await getDocs(qQuery);
+    return snapshot.docs.map(calculationDoc => ({
+        id: calculationDoc.id,
+        title: calculationDoc.data().title,
+        calculatorId: calculationDoc.data().calculatorId,
+        patientId: calculationDoc.data().patientId
+    }));
+}
 
-        return snapshot.docs.map(calculationDoc => ({
-            id: calculationDoc.id,
-            title: calculationDoc.data().title,
-            calculatorId: calculationDoc.data().calculatorId,
-            patientId: calculationDoc.data().patientId
-        }));
-    },
+export async function getCalculation(userId, patientId, calculationId){
+    if(!userId || !validateId(patientId) || !validateId(calculationId))
+        return [];
 
-    async getCalculation(userId, patientId, calculationId){
-        if(!userId || !this.validateId(patientId) || !this.validateId(calculationId))
-            return [];
+    const calculationDoc = doc(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION,
+        calculationId
+    );
 
-        const calculationDoc = doc(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION,
-            calculationId
-        );
+    const calculation = await getDoc(calculationDoc);
 
-        const calculation = await getDoc(calculationDoc);
+    return {
+        id: calculation.id,
+        ...calculation.data()
+    };
+}
 
-        return {
-            id: calculation.id,
-            ...calculation.data()
-        };
-    },
+export async function getCalculationNoPatientId(userId, calculationId) {
+    if(!userId || !validateId(calculationId))
+        return null;
 
-    async getCalculationNoPatientId(userId, calculationId) {
-        if(!userId || !this.validateId(calculationId))
-            return null;
+    const calculationQuery = query(
+        collectionGroup(db, CALCULATION_COLLECTION),
+        where('userId', '==', userId),
+        where('calculationId', '==', calculationId),
+        limit(1)
+    );
 
-        const calculationQuery = query(
-            collectionGroup(db, CALCULATION_COLLECTION),
-            where('userId', '==', userId),
-            where('calculationId', '==', calculationId),
-            limit(1)
-        );
+    const snapshot = await getDocs(calculationQuery);
 
-        const snapshot = await getDocs(calculationQuery);
+    if(snapshot.empty)
+        return null;
 
-        if(snapshot.empty)
-            return null;
+    const calculationDoc = snapshot.docs[0];
 
-        const calculationDoc = snapshot.docs[0];
-
-        return {
-            id: calculationDoc.id,
-            ...calculationDoc.data()
-        }
-    },
-
-    async addCalculation(userId, patientId, title, comments, calculationValues, calculatorId){
-        if(!userId || !this.validateId(patientId) || !title || !calculationValues)
-            throw new Error('Missing fields to add calculations');
-
-        const calculation = {
-            title,
-            comments,
-            calculationValues,
-            patientId,
-            createdAt: new Date(),
-            calculatorId
-        };
-
-        const calculationRef = collection(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION
-        );
-
-        const calculationNew = await addDoc(calculationRef, calculation);
-
-        return {
-            id: calculationNew.id,
-            ...calculation
-        };
-    },
-
-    async updateCalculation(userId, patientId, calculationId, calculation){
-        if(!userId || !this.validateId(patientId) || !this.validateId(calculationId) || !calculation)
-            throw new Error('Missing fields to updated calculations');
-
-        const calculationDoc = doc(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION,
-            calculationId
-        );
-
-        const calculationUpdated = await updateDoc(calculationDoc, calculation);
-
-        return {
-            id: calculationId,
-            ...calculation
-        }
-    },
-
-    async deleteCalculation(userId, patientId, calculationId){
-        if(!userId || !this.validateId(patientId) || !this.validateId(calculationId))
-            throw new Error('Missing fields to delete calculations');
-
-        const calculationDoc = doc(
-            db,
-            USERS_COLLECTION,
-            userId,
-            PATIENT_COLLECTION,
-            patientId,
-            CALCULATION_COLLECTION,
-            calculationId
-        );
-
-        await deleteDoc(calculationDoc);
+    return {
+        id: calculationDoc.id,
+        ...calculationDoc.data()
     }
+}
 
-};
+export async function addCalculation(userId, patientId, title, comments, calculationValues, calculatorId){
+    if(!userId || !validateId(patientId) || !title || !calculationValues)
+        throw new Error('Missing fields to add calculations');
 
-export default CalculationService;
+    const calculation = {
+        title,
+        comments,
+        calculationValues,
+        patientId,
+        createdAt: new Date(),
+        calculatorId
+    };
+
+    const calculationRef = collection(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION
+    );
+
+    const calculationNew = await addDoc(calculationRef, calculation);
+
+    return {
+        id: calculationNew.id,
+        ...calculation
+    };
+}
+
+export async function updateCalculation(userId, patientId, calculationId, calculation){
+    if(!userId || !validateId(patientId) || !validateId(calculationId) || !calculation)
+        throw new Error('Missing fields to updated calculations');
+
+    const calculationDoc = doc(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION,
+        calculationId
+    );
+
+    const calculationUpdated = await updateDoc(calculationDoc, calculation);
+
+    return {
+        id: calculationId,
+        ...calculation
+    }
+}
+
+export async function deleteCalculation(userId, patientId, calculationId){
+    if(!userId || !validateId(patientId) || !validateId(calculationId))
+        throw new Error('Missing fields to delete calculations');
+
+    const calculationDoc = doc(
+        db,
+        USERS_COLLECTION,
+        userId,
+        PATIENT_COLLECTION,
+        patientId,
+        CALCULATION_COLLECTION,
+        calculationId
+    );
+
+    await deleteDoc(calculationDoc);
+}
