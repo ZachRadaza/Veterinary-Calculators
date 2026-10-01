@@ -1,7 +1,7 @@
 import { computed, ref, watch } from "vue";
-import CalculationService from "../services/CalculationService";
 import { useUser } from "./User";
 import { usePatient } from "./Patient";
+import { addCalculation, deleteCalculation, getCalculationNoPatientId, getCalculations, getCalculatorCalculations, updateCalculation } from "../services/CalculationService";
 
 const _calculations = ref(new Map());
 const _savedCalculation = ref(null);
@@ -30,7 +30,7 @@ function setCalculationValueHelper(inputtedPatient, calcValues){
 
 async function loadAllPatientSavedCalculationsHelper(userId, patientId){
     try{
-        const loadedCalculations = await CalculationService.getCalculations(
+        const loadedCalculations = await getCalculations(
             userId, 
             patientId,
         );
@@ -43,7 +43,7 @@ async function loadAllPatientSavedCalculationsHelper(userId, patientId){
 
 async function loadPatientSavedCalculationsHelper(userId, patientId, calculatorId){
     try{
-        const loadedCalculations = _calculations.value = await CalculationService.getCalculatorCalculations(
+        const loadedCalculations = _calculations.value = await getCalculatorCalculations(
             userId,
             patientId,
             calculatorId
@@ -61,13 +61,13 @@ async function loadSavedCalculationHelper(userId, patientId, calculationId){
             return;
 
         if(patientId && patientId !== -1)
-            _savedCalculation.value = await CalculationService.getCalculation(
+            _savedCalculation.value = await getCalculation(
                 userId,
                 patientId,
                 calculationId
             );
         else
-            _savedCalculation.value = await CalculationService.getCalculationNoPatientId(
+            _savedCalculation.value = await getCalculationNoPatientId(
                 userId,
                 calculationId
             );
@@ -80,7 +80,7 @@ async function loadSavedCalculationHelper(userId, patientId, calculationId){
 
 async function saveCalculationHelper(userId, patientId, title, comments, calcTypeId){
     try{
-        const newCalculation = await CalculationService.addCalculation(
+        const newCalculation = await addCalculation(
             userId,
             patientId,
             title,
@@ -97,7 +97,7 @@ async function saveCalculationHelper(userId, patientId, title, comments, calcTyp
 
 async function updateCalculationHelper(userId, patientId, calculationId, calculation){
     try{
-        const updatedCalcuation = await CalculationService.updateCalculation(
+        const updatedCalcuation = await updateCalculation(
             userId,
             patientId,
             calculationId,
@@ -112,7 +112,7 @@ async function updateCalculationHelper(userId, patientId, calculationId, calcula
 
 async function deleteCalculationHelper(userId, patientId, calculationId){
     try{
-        await CalculationService.deleteCalculation(userId, patientId, calculationId);
+        await deleteCalculation(userId, patientId, calculationId);
 
         _calculations.value.delete(calculationId);
     } catch(error){

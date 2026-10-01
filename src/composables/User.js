@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import UsersService from "../services/UsersService";
+import { forgetUserPassword, getCurrentUser, loginUser, logoutUser, register } from "../services/UsersService";
 
 const user = ref(null);
 
@@ -9,7 +9,7 @@ const userId = computed(() => user.value?.id ?? '');
 async function login(email, password){
     let errorMessage = '';
     try{
-        const authUser = await UsersService.login(email, password);
+        const authUser = await loginUser(email, password);
     } catch(error){
         console.error('Error in logging in: ', error);
         
@@ -34,7 +34,7 @@ async function login(email, password){
 async function signUp(email, password, username){
     let errorMessage = '';
     try{
-        const authError = await UsersService.register(email, password, username);
+        const authError = await register(email, password, username);
     } catch(error){
         console.error('Error in Creating Account: ', error);
 
@@ -66,11 +66,11 @@ async function signUp(email, password, username){
 }
 
 async function logout(){
-    await UsersService.logout();
+    await logoutUser();
 }
 
-async function getCurrentUser(){
-    user.value = await UsersService.getCurrentUser();
+async function loadCurrentUser(){
+    user.value = await getCurrentUser();
 }
 
 async function forgetPassword(email){
@@ -81,7 +81,7 @@ async function forgetPassword(email){
             return errorMessage;
         }
 
-        await UsersService.forgetPassword(email);
+        await forgetUserPassword(email);
 
     } catch(error){
         console.error(error);
@@ -93,6 +93,6 @@ async function forgetPassword(email){
 export function useUser(){
     return {
         user, isLoggedIn, userId,
-        login, signUp, logout, getCurrentUser, forgetPassword
+        login, signUp, logout, loadCurrentUser, forgetPassword
     };
 }

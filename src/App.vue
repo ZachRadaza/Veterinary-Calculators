@@ -10,7 +10,7 @@ let stopAuthListener;
 
 onMounted(() => {
     stopAuthListener = onAuthStateChanged(auth, (userAuth) => {
-        user.getCurrentUser();
+        user.loadCurrentUser();
     });
 });
 
